@@ -1,1095 +1,713 @@
-/* Grupa przycisków w/**
+/**
  * Newsletter AI - Admin Styles
- * Minimalistyczny i funkcjonalny design
+ * Standardowe kolory WordPress
  */
 
-/* Reset i podstawy */
-.nai-xml-settings,
-.nai-users-consent {
+/* ========== PODSTAWY ========== */
+.nai-admin-page {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    font-size: 13px;
-    line-height: 1.4;
+    max-width: 1400px;
+    margin: 0 auto;
 }
 
-/* Główne kontenery */
-.wrap .nai-xml-settings,
-.wrap .nai-users-consent {
-    max-width: 1200px;
+.nai-admin-page h1 {
+    color: #1d2327;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
 }
 
-/* Boxes */
-.nai-stats-box,
-.nai-info-box,
-.nai-warning-box {
-    margin: 15px 0;
-    padding: 12px 15px;
-    border-radius: 3px;
-    font-size: 13px;
+.nai-admin-page h1::before {
+    content: "📧";
+    font-size: 24px;
 }
 
-.nai-stats-box {
-    background: #f7f7f7;
-    border: 1px solid #ddd;
-    border-left: 3px solid #666;
+/* ========== NAWIGACJA TABÓW ========== */
+.nai-nav-tabs {
+    border-bottom: 1px solid #c3c4c7;
+    margin-bottom: 30px;
+    background: #fff;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    border-radius: 6px 6px 0 0;
 }
 
-.nai-info-box {
-    background: #e7f3ff;
-    border: 1px solid #b3d9ff;
-    border-left: 3px solid #0073aa;
+.nai-nav-tabs ul {
+    display: flex;
+    margin: 0;
+    padding: 0;
+    list-style: none;
 }
 
-.nai-warning-box {
-    background: #fff8e5;
-    border: 1px solid #ffb900;
-    border-left: 3px solid #f56e28;
+.nai-nav-tab {
+    padding: 15px 25px;
+    border: none;
+    background: transparent;
+    color: #646970;
+    text-decoration: none;
+    position: relative;
+    transition: all 0.2s ease;
+    font-weight: 500;
+    border-bottom: 3px solid transparent;
 }
 
-.nai-stats-box h3,
-.nai-info-box h4,
-.nai-warning-box h4 {
-    margin: 0 0 8px 0;
-    font-size: 14px;
+.nai-nav-tab:hover {
+    color: #2271b1;
+    background: #f6f7f7;
+    text-decoration: none;
+}
+
+.nai-nav-tab.active {
+    color: #2271b1;
+    border-bottom-color: #2271b1;
+    background: #fff;
+}
+
+.nai-nav-tab.active::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: #fff;
+}
+
+/* ========== METABOX'Y ========== */
+.nai-metabox {
+    background: #fff;
+    border: 1px solid #c3c4c7;
+    border-radius: 6px;
+    margin-bottom: 20px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    overflow: hidden;
+}
+
+.nai-metabox-header {
+    padding: 15px 20px;
+    background: #f6f7f7;
+    color: #1d2327;
+    border-bottom: 1px solid #c3c4c7;
+    position: relative;
+}
+
+.nai-metabox-header h3 {
+    margin: 0;
+    font-size: 16px;
     font-weight: 600;
+    color: #1d2327;
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 
-.nai-stats-box p,
-.nai-info-box p,
-.nai-warning-box p {
-    margin: 4px 0;
-    line-height: 1.4;
+.nai-metabox-header.primary {
+    background: #2271b1;
+    color: #fff;
 }
 
-/* Siatka statystyk */
+.nai-metabox-header.primary h3 {
+    color: #fff;
+}
+
+.nai-metabox-header.secondary {
+    background: #0073aa;
+    color: #fff;
+}
+
+.nai-metabox-header.secondary h3 {
+    color: #fff;
+}
+
+.nai-metabox-header.success {
+    background: #00a32a;
+    color: #fff;
+}
+
+.nai-metabox-header.success h3 {
+    color: #fff;
+}
+
+.nai-metabox-header.warning {
+    background: #dba617;
+    color: #fff;
+}
+
+.nai-metabox-header.warning h3 {
+    color: #fff;
+}
+
+.nai-metabox-content {
+    padding: 20px;
+}
+
+.nai-metabox-content:empty {
+    display: none;
+}
+
+/* ========== SIATKA UKŁADU ========== */
+.nai-grid {
+    display: grid;
+    gap: 20px;
+}
+
+.nai-grid-2 {
+    grid-template-columns: 1fr 1fr;
+}
+
+.nai-grid-3 {
+    grid-template-columns: 1fr 1fr 1fr;
+}
+
+.nai-grid-auto {
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+}
+
+/* ========== STATYSTYKI ========== */
 .nai-stats-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-    gap: 12px;
-    margin: 15px 0;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+    margin: 20px 0;
 }
 
-.nai-stat-box {
+.nai-stat-card {
     background: #fff;
-    border: 1px solid #ddd;
-    border-radius: 3px;
-    padding: 15px 10px;
+    border: 1px solid #c3c4c7;
+    border-radius: 6px;
+    padding: 20px;
     text-align: center;
-    transition: border-color 0.2s;
+    transition: all 0.2s ease;
+    position: relative;
+    overflow: hidden;
 }
 
-.nai-stat-box:hover {
-    border-color: #0073aa;
+.nai-stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: #2271b1;
+}
+
+.nai-stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
 }
 
 .nai-stat-number {
-    font-size: 20px;
+    font-size: 28px;
     font-weight: 700;
-    color: #0073aa;
+    color: #2271b1;
     line-height: 1;
-    margin-bottom: 4px;
+    margin-bottom: 5px;
 }
 
 .nai-stat-label {
-    font-size: 11px;
-    color: #666;
+    font-size: 13px;
+    color: #646970;
     text-transform: uppercase;
     letter-spacing: 0.5px;
     font-weight: 500;
 }
 
-/* Kontrolki */
-.nai-users-controls {
-    background: #f9f9f9;
-    border: 1px solid #ddd;
+/* ========== PRZYCISKI ========== */
+.nai-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    border: 1px solid #2271b1;
     border-radius: 3px;
-    padding: 15px;
-    margin: 15px 0;
-}
-
-.nai-users-controls h3 {
-    margin: 0 0 12px 0;
     font-size: 14px;
     font-weight: 600;
-    color: #23282d;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+    overflow: hidden;
 }
 
-.nai-users-controls > div {
-    margin-bottom: 12px;
-    padding-bottom: 12px;
-    border-bottom: 1px solid #eee;
+.nai-btn-primary {
+    background: #2271b1;
+    color: #fff;
+    border-color: #2271b1;
 }
 
-.nai-users-controls > div:last-child {
-    margin-bottom: 0;
-    padding-bottom: 0;
+.nai-btn-primary:hover {
+    background: #135e96;
+    border-color: #135e96;
+    color: #fff;
+    text-decoration: none;
+}
+
+.nai-btn-secondary {
+    background: #f6f7f7;
+    color: #2c3338;
+    border-color: #c3c4c7;
+}
+
+.nai-btn-secondary:hover {
+    background: #fff;
+    color: #2c3338;
+    text-decoration: none;
+}
+
+.nai-btn-success {
+    background: #00a32a;
+    color: #fff;
+    border-color: #00a32a;
+}
+
+.nai-btn-success:hover {
+    background: #008a20;
+    border-color: #008a20;
+    color: #fff;
+}
+
+.nai-btn-warning {
+    background: #dba617;
+    color: #fff;
+    border-color: #dba617;
+}
+
+.nai-btn-warning:hover {
+    background: #c29d0b;
+    border-color: #c29d0b;
+    color: #fff;
+}
+
+.nai-btn-large {
+    padding: 12px 24px;
+    font-size: 16px;
+}
+
+.nai-btn-small {
+    padding: 6px 12px;
+    font-size: 12px;
+}
+
+.nai-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none !important;
+}
+
+/* ========== FORMULARZE ========== */
+.nai-form-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.nai-form-table th {
+    text-align: left;
+    padding: 15px 10px;
+    font-weight: 600;
+    color: #1d2327;
+    width: 200px;
+    vertical-align: top;
+    border-bottom: 1px solid #f0f0f1;
+}
+
+.nai-form-table td {
+    padding: 15px 10px;
+    border-bottom: 1px solid #f0f0f1;
+}
+
+.nai-form-table .description {
+    margin-top: 5px;
+    color: #646970;
+    font-size: 13px;
+    line-height: 1.4;
+}
+
+.nai-form-field {
+    margin-bottom: 20px;
+}
+
+.nai-form-field label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 600;
+    color: #1d2327;
+}
+
+.nai-form-field input[type="text"],
+.nai-form-field input[type="url"],
+.nai-form-field input[type="email"],
+.nai-form-field textarea,
+.nai-form-field select {
+    width: 100%;
+    max-width: 400px;
+    padding: 8px 12px;
+    border: 1px solid #8c8f94;
+    border-radius: 4px;
+    font-size: 14px;
+    transition: border-color 0.2s ease;
+    background: #fff;
+}
+
+.nai-form-field input:focus,
+.nai-form-field textarea:focus,
+.nai-form-field select:focus {
+    border-color: #2271b1;
+    box-shadow: 0 0 0 1px #2271b1;
+    outline: none;
+}
+
+/* ========== TABELA UŻYTKOWNIKÓW ========== */
+.nai-users-table {
+    background: #fff;
+    border: 1px solid #c3c4c7;
+    border-radius: 6px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+}
+
+.nai-users-table th {
+    background: #f6f7f7;
+    padding: 12px;
+    font-weight: 600;
+    color: #1d2327;
+    border-bottom: 1px solid #c3c4c7;
+}
+
+.nai-users-table td {
+    padding: 12px;
+    border-bottom: 1px solid #f0f0f1;
+    vertical-align: middle;
+}
+
+.nai-users-table tr:last-child td {
     border-bottom: none;
 }
 
-/* Wyszukiwarka */
-.nai-search-box {
-    background: #fff;
-    border: 1px solid #ddd;
-    border-radius: 3px;
-    padding: 12px;
-    margin: 15px 0;
+.nai-users-table tr:hover td {
+    background-color: #f6f7f7;
 }
 
-.nai-search-box h3 {
-    margin: 0 0 8px 0;
-    font-size: 14px;
-    font-weight: 600;
-}
-
-/* MAŁE INPUTY */
-#nai-user-search,
-.nai-xml-settings input[type="text"],
-.nai-xml-settings input[type="url"] {
-    width: 100%;
-    max-width: 300px;
-    padding: 6px 8px;
-    border: 1px solid #ddd;
-    border-radius: 3px;
-    font-size: 13px;
-    background: #fff;
-    transition: border-color 0.2s;
-}
-
-#nai-user-search:focus,
-.nai-xml-settings input[type="text"]:focus,
-.nai-xml-settings input[type="url"]:focus {
-    border-color: #0073aa;
-    box-shadow: 0 0 0 1px #0073aa;
-    outline: none;
-}
-
-/* FANCY PRZYCISKI */
-.button.button-primary {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    border: none;
-    color: #fff;
-    font-size: 12px;
-    padding: 8px 16px;
-    height: auto;
-    line-height: 1.2;
-    border-radius: 6px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    position: relative;
-    overflow: hidden;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
-    cursor: pointer;
-}
-
-.button.button-primary::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-    transition: left 0.5s;
-}
-
-.button.button-primary:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
-    background: linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%);
-}
-
-.button.button-primary:hover::before {
-    left: 100%;
-}
-
-.button.button-primary:active {
-    transform: translateY(0);
-    box-shadow: 0 2px 5px rgba(102, 126, 234, 0.3);
-}
-
-.button.button-secondary {
-    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-    border: none;
-    color: #fff;
-    font-size: 12px;
-    padding: 8px 16px;
-    height: auto;
-    line-height: 1.2;
-    border-radius: 6px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    position: relative;
-    overflow: hidden;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: 0 2px 8px rgba(240, 147, 251, 0.3);
-    cursor: pointer;
-}
-
-.button.button-secondary::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-    transition: left 0.5s;
-}
-
-.button.button-secondary:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 15px rgba(240, 147, 251, 0.4);
-    background: linear-gradient(135deg, #e879f9 0%, #ec4899 100%);
-}
-
-.button.button-secondary:hover::before {
-    left: 100%;
-}
-
-.button.button-secondary:active {
-    transform: translateY(0);
-    box-shadow: 0 2px 5px rgba(240, 147, 251, 0.3);
-}
-
-/* Specjalne przyciski dla różnych akcji */
-.button.nai-generate-btn {
-    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-    border: none;
-    color: #fff;
-    font-size: 13px;
-    padding: 10px 20px;
-    border-radius: 8px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    position: relative;
-    overflow: hidden;
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: 0 4px 15px rgba(79, 172, 254, 0.4);
-    cursor: pointer;
-}
-
-.button.nai-generate-btn::after {
-    content: '⚡';
-    position: absolute;
-    right: 10px;
-    top: 50%;
-    transform: translateY(-50%);
-    font-size: 14px;
-    opacity: 0;
-    transition: opacity 0.3s;
-}
-
-.button.nai-generate-btn:hover {
-    transform: translateY(-3px) scale(1.02);
-    box-shadow: 0 6px 20px rgba(79, 172, 254, 0.5);
-    padding-right: 35px;
-}
-
-.button.nai-generate-btn:hover::after {
-    opacity: 1;
-}
-
-.button.nai-delete-btn {
-    background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
-    border: none;
-    color: #fff;
-    font-size: 12px;
-    padding: 6px 12px;
-    border-radius: 6px;
-    font-weight: 600;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: 0 2px 8px rgba(255, 154, 158, 0.3);
-}
-
-.button.nai-delete-btn:hover {
-    background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(255, 107, 107, 0.4);
-}
-
-.button.nai-success-btn {
-    background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
-    border: none;
-    color: #2d3748;
-    font-size: 12px;
-    padding: 6px 12px;
-    border-radius: 6px;
-    font-weight: 600;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: 0 2px 8px rgba(168, 237, 234, 0.3);
-}
-
-.button.nai-success-btn:hover {
-    background: linear-gradient(135deg, #81e6d9 0%, #fbb6ce 100%);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(129, 230, 217, 0.4);
-}
-
-.button.button-large {
-    font-size: 14px;
-    padding: 12px 24px;
-    border-radius: 8px;
-    font-weight: 700;
-    letter-spacing: 0.8px;
-}
-
-.button.button-small {
-    font-size: 10px;
-    padding: 4px 10px;
-    height: auto;
-    line-height: 1.2;
-    border-radius: 4px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.3px;
-}
-
-/* Przycisk z ikoną */
-.button.nai-icon-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    border: none;
-    color: #fff;
-    font-size: 12px;
-    padding: 6px 12px;
-    border-radius: 6px;
-    font-weight: 600;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
-}
-
-.button.nai-icon-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
-    gap: 8px;
-}
-
-.button.nai-icon-btn .dashicons {
-    font-size: 14px;
-    transition: transform 0.3s;
-}
-
-.button.nai-icon-btn:hover .dashicons {
-    transform: scale(1.1);
-}
-
-/* Loading state dla przycisków */
-.button.nai-loading {
-    position: relative;
-    color: transparent !important;
-    pointer-events: none;
-}
-
-.button.nai-loading::after {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 14px;
-    height: 14px;
-    border: 2px solid rgba(255,255,255,0.3);
-    border-top: 2px solid #fff;
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-    0% { transform: translate(-50%, -50%) rotate(0deg); }
-    100% { transform: translate(-50%, -50%) rotate(360deg); }
-}
-
-/* Przyciski grupowe */
-.nai-button-group {
-    display: inline-flex;
-    border-radius: 6px;
-    overflow: hidden;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-}
-
-.nai-button-group .button {
-    border-radius: 0;
-    margin: 0;
-    border-right: 1px solid rgba(255,255,255,0.2);
-}
-
-.nai-button-group .button:first-child {
-    border-radius: 6px 0 0 6px;
-}
-
-.nai-button-group .button:last-child {
-    border-radius: 0 6px 6px 0;
-    border-right: none;
-}
-
-.nai-button-group .button:only-child {
-    border-radius: 6px;
-    border-right: none;
-}
-
-/* Floating action button */
-.nai-fab {
-    position: fixed;
-    bottom: 30px;
-    right: 30px;
-    width: 56px;
-    height: 56px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    border: none;
-    color: #fff;
-    font-size: 24px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 4px 20px rgba(102, 126, 234, 0.4);
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    cursor: pointer;
-    z-index: 1000;
-}
-
-.nai-fab:hover {
-    transform: scale(1.1);
-    box-shadow: 0 6px 25px rgba(102, 126, 234, 0.5);
-}
-
-.nai-fab:active {
-    transform: scale(0.95);
-}
-
-/* Pulse animation dla ważnych przycisków */
-@keyframes pulse {
-    0% {
-        box-shadow: 0 0 0 0 rgba(102, 126, 234, 0.7);
-    }
-    70% {
-        box-shadow: 0 0 0 10px rgba(102, 126, 234, 0);
-    }
-    100% {
-        box-shadow: 0 0 0 0 rgba(102, 126, 234, 0);
-    }
-}
-
-.button.nai-pulse {
-    animation: pulse 2s infinite;
-}
-
-/* Disabled state */
-.button:disabled,
-.button.disabled {
-    background: #e2e8f0 !important;
-    color: #a0aec0 !important;
-    cursor: not-allowed !important;
-    transform: none !important;
-    box-shadow: none !important;
-}
-
-.button:disabled::before,
-.button.disabled::before {
-    display: none;
-}
-
-/* Focus states */
-.button:focus {
-    outline: none;
-    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.5);
-}
-
-/* Responsive */
-@media (max-width: 768px) {
-    .button {
-        font-size: 11px;
-        padding: 6px 12px;
-    }
-    
-    .button.button-large {
-        font-size: 12px;
-        padding: 8px 16px;
-    }
-    
-    .nai-fab {
-        width: 48px;
-        height: 48px;
-        bottom: 20px;
-        right: 20px;
-        font-size: 20px;
-    }
-}
-
-/* Dark mode support */
-@media (prefers-color-scheme: dark) {
-    .button.button-primary {
-        background: linear-gradient(135deg, #4c51bf 0%, #553c9a 100%);
-    }
-    
-    .button.button-secondary {
-        background: linear-gradient(135deg, #d53f8c 0%, #b83280 100%);
-    }
-}
-
-/* FANCY PRZYCISKI W TABELI */
-.nai-users-table .button {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    border: none;
-    color: #fff;
-    font-size: 10px;
-    padding: 4px 8px;
-    height: 24px;
-    line-height: 1;
-    border-radius: 4px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.3px;
-    position: relative;
-    overflow: hidden;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: 0 1px 4px rgba(102, 126, 234, 0.3);
-    cursor: pointer;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-width: 28px;
-}
-
-.nai-users-table .button::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
-    transition: left 0.4s;
-}
-
-.nai-users-table .button:hover {
-    transform: translateY(-1px) scale(1.05);
-    box-shadow: 0 2px 8px rgba(102, 126, 234, 0.4);
-    background: linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%);
-}
-
-.nai-users-table .button:hover::before {
-    left: 100%;
-}
-
-.nai-users-table .button:active {
-    transform: translateY(0) scale(1);
-    box-shadow: 0 1px 3px rgba(102, 126, 234, 0.3);
-}
-
-/* Specjalne przyciski w tabeli */
-.nai-users-table .button.nai-edit-btn {
-    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-    box-shadow: 0 1px 4px rgba(79, 172, 254, 0.3);
-}
-
-.nai-users-table .button.nai-edit-btn:hover {
-    background: linear-gradient(135deg, #3182ce 0%, #0bc5ea 100%);
-    box-shadow: 0 2px 8px rgba(79, 172, 254, 0.4);
-}
-
-.nai-users-table .button.nai-delete-btn {
-    background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
-    box-shadow: 0 1px 4px rgba(255, 154, 158, 0.3);
-}
-
-.nai-users-table .button.nai-delete-btn:hover {
-    background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
-    box-shadow: 0 2px 8px rgba(255, 107, 107, 0.4);
-}
-
-.nai-users-table .button.nai-view-btn {
-    background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
-    color: #2d3748;
-    box-shadow: 0 1px 4px rgba(168, 237, 234, 0.3);
-}
-
-.nai-users-table .button.nai-view-btn:hover {
-    background: linear-gradient(135deg, #81e6d9 0%, #fbb6ce 100%);
-    box-shadow: 0 2px 8px rgba(129, 230, 217, 0.4);
-}
-
-/* Ikony w przyciskach tabeli */
-.nai-users-table .button .dashicons {
-    font-size: 12px;
-    line-height: 1;
-    width: 12px;
-    height: 12px;
-    color: #fff !important;
-    transition: transform 0.3s;
-}
-
-.nai-users-table .button:hover .dashicons {
-    transform: scale(1.1) rotate(5deg);
-    color: #fff !important;
-}
-
-/* Override dla wszystkich ikon w przyciskach */
-.nai-users-table .button .dashicons-edit,
-.nai-users-table .button .dashicons-trash,
-.nai-users-table .button .dashicons-visibility,
-.nai-users-table .button .dashicons-admin-users,
-.nai-users-table .button .dashicons-yes,
-.nai-users-table .button .dashicons-no-alt {
-    color: #fff !important;
-}
-
-/* Specjalne kolory dla przycisków view (zielone) */
-.nai-users-table .button.nai-view-btn .dashicons {
-    color: #2d3748 !important;
-}
-
-.nai-users-table .button.nai-view-btn:hover .dashicons {
-    color: #2d3748 !important;
-}
-
-/* Przyciski tylko z ikonami */
-.nai-users-table .button.nai-icon-only {
-    width: 24px;
-    height: 24px;
-    padding: 0;
-    border-radius: 50%;
-}
-
-.nai-users-table .button.nai-icon-only:hover {
-    border-radius: 4px;
-}
-
-/* Grupa przycisków w komórce */
-.nai-users-table .nai-table-actions {
-    display: flex;
-    gap: 3px;
-    justify-content: center;
-    align-items: center;
-}
-
-.nai-users-table .nai-table-actions .button {
-    margin: 0;
-}
-
-/* Przyciski z tooltipami */
-.nai-users-table .button[title] {
-    position: relative;
-}
-
-.nai-users-table .button[title]:hover::after {
-    content: attr(title);
-    position: absolute;
-    bottom: 100%;
-    left: 50%;
-    transform: translateX(-50%);
-    background: rgba(0,0,0,0.8);
-    color: white;
-    padding: 2px 6px;
-    border-radius: 3px;
-    font-size: 10px;
-    white-space: nowrap;
-    z-index: 1000;
-    margin-bottom: 2px;
-}
-
-/* Loading state dla przycisków w tabeli */
-.nai-users-table .button.nai-loading {
-    position: relative;
-    color: transparent !important;
-    pointer-events: none;
-}
-
-.nai-users-table .button.nai-loading::after {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 10px;
-    height: 10px;
-    border: 1px solid rgba(255,255,255,0.3);
-    border-top: 1px solid #fff;
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-}
-
-/* Disabled state dla przycisków w tabeli */
-.nai-users-table .button:disabled,
-.nai-users-table .button.disabled {
-    background: #e2e8f0 !important;
-    color: #a0aec0 !important;
-    cursor: not-allowed !important;
-    transform: none !important;
-    box-shadow: none !important;
-    opacity: 0.6;
-}
-
-/* Hover effect dla całego wiersza gdy hover na przycisk */
-.nai-users-table tr:hover .button {
-    opacity: 1;
-    visibility: visible;
-}
-
-.nai-users-table .button {
-    opacity: 0.8;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-/* Focus states */
-.nai-users-table .button:focus {
-    outline: none;
-    box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.5);
-    z-index: 1;
-}
-
-/* Responsywność dla przycisków w tabeli */
-@media (max-width: 768px) {
-    .nai-users-table .button {
-        font-size: 9px;
-        padding: 3px 6px;
-        height: 20px;
-        min-width: 24px;
-    }
-    
-    .nai-users-table .button .dashicons {
-        font-size: 10px;
-        width: 10px;
-        height: 10px;
-    }
-    
-    .nai-users-table .button.nai-icon-only {
-        width: 20px;
-        height: 20px;
-    }
-    
-    .nai-users-table .nai-table-actions {
-        gap: 2px;
-    }
-}
-
-@media (max-width: 480px) {
-    .nai-users-table .button {
-        font-size: 8px;
-        padding: 2px 4px;
-        height: 18px;
-        min-width: 20px;
-    }
-    
-    .nai-users-table .button .dashicons {
-        font-size: 8px;
-        width: 8px;
-        height: 8px;
-    }
-    
-    .nai-users-table .button.nai-icon-only {
-        width: 18px;
-        height: 18px;
-    }
-}
-
-/* Animacja pojawiania się przycisków */
-@keyframes buttonSlideIn {
-    from {
-        opacity: 0;
-        transform: translateX(10px);
-    }
-    to {
-        opacity: 1;
-        transform: translateX(0);
-    }
-}
-
-.nai-users-table .button {
-    animation: buttonSlideIn 0.3s ease;
-}
-
-/* Specjalne efekty */
-.nai-users-table .button.nai-glow {
-    box-shadow: 0 0 10px rgba(102, 126, 234, 0.5);
-    animation: glow 2s infinite alternate;
-}
-
-@keyframes glow {
-    from {
-        box-shadow: 0 0 5px rgba(102, 126, 234, 0.5);
-    }
-    to {
-        box-shadow: 0 0 15px rgba(102, 126, 234, 0.8);
-    }
-}
-
-/* Wartości zgody bez przełącznika */
+/* Statusy zgody */
 .nai-consent-yes {
     display: inline-block;
-    background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
-    color: #155724;
-    border: 1px solid #c3e6cb;
-    padding: 3px 8px;
-    border-radius: 3px;
+    background: #d1ecf1;
+    color: #0c5460;
+    padding: 4px 8px;
+    border-radius: 4px;
     font-weight: 600;
+    font-size: 11px;
     text-transform: uppercase;
-    font-size: 10px;
-    letter-spacing: 0.5px;
 }
 
 .nai-consent-no {
     display: inline-block;
-    background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
+    background: #f8d7da;
     color: #721c24;
-    border: 1px solid #f5c6cb;
-    padding: 3px 8px;
-    border-radius: 3px;
+    padding: 4px 8px;
+    border-radius: 4px;
     font-weight: 600;
+    font-size: 11px;
     text-transform: uppercase;
-    font-size: 10px;
-    letter-spacing: 0.5px;
 }
 
 .nai-consent-value {
-    font-size: 9px;
-    color: #666;
-    font-style: italic;
-    margin-top: 2px;
-    display: block;
+    font-size: 11px;
+    color: #646970;
+    margin-top: 3px;
 }
 
-/* Loading */
+/* ========== WYSZUKIWARKA ========== */
+.nai-search-box {
+    background: #fff;
+    border: 1px solid #c3c4c7;
+    border-radius: 6px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.nai-search-box h3 {
+    margin: 0 0 15px 0;
+    color: #1d2327;
+}
+
+.nai-search-input {
+    width: 100%;
+    max-width: 400px;
+    padding: 10px 15px;
+    border: 1px solid #8c8f94;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.nai-search-input:focus {
+    border-color: #2271b1;
+    box-shadow: 0 0 0 1px #2271b1;
+    outline: none;
+}
+
+/* ========== KOMUNIKATY ========== */
+.nai-notice {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 15px;
+    border-radius: 6px;
+    margin: 15px 0;
+    font-size: 14px;
+    border-left: 4px solid;
+}
+
+.nai-notice-success {
+    background: #d1ecf1;
+    color: #0c5460;
+    border-left-color: #00a32a;
+}
+
+.nai-notice-error {
+    background: #f8d7da;
+    color: #721c24;
+    border-left-color: #d63638;
+}
+
+.nai-notice-warning {
+    background: #fff3cd;
+    color: #856404;
+    border-left-color: #dba617;
+}
+
+.nai-notice-info {
+    background: #d1ecf1;
+    color: #0c5460;
+    border-left-color: #2271b1;
+}
+
+/* ========== LOADING I SPINNERS ========== */
 .nai-loading {
     text-align: center;
-    padding: 30px 15px;
-    color: #666;
-    font-size: 13px;
+    padding: 40px 20px;
+    color: #646970;
 }
 
-.nai-loading .spinner {
-    margin-right: 6px;
-}
-
-/* Status generowania XML */
-#nai-xml-generation-status {
-    font-weight: 600;
-    font-size: 12px;
-}
-
-#nai-xml-generation-status .spinner {
-    margin: 0 6px;
-}
-
-/* Paginacja */
-.tablenav {
-    background: #f7f7f7;
-    padding: 8px 12px;
-    font-size: 12px;
-}
-
-.tablenav-pages {
-    float: right;
-}
-
-.displaying-num {
-    color: #666;
-    font-size: 12px;
-    margin-right: 10px;
-}
-
-.pagination-links .button,
-.pagination-links .page-numbers {
-    padding: 4px 6px;
-    margin: 0 1px;
-    text-decoration: none;
-    border: 1px solid #ddd;
-    background: #fff;
-    color: #555;
-    font-size: 11px;
-    border-radius: 2px;
-    min-width: 24px;
-    height: 24px;
-    line-height: 14px;
-    text-align: center;
+.nai-spinner {
     display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 2px solid #f3f3f3;
+    border-top: 2px solid #2271b1;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-right: 8px;
 }
 
-.pagination-links .button:hover,
-.pagination-links .page-numbers:hover {
-    background: #f7f7f7;
-    border-color: #999;
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
 }
 
-.pagination-links .button.disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-}
-
-.paging-input {
-    color: #555;
-    font-weight: 500;
-    padding: 4px 8px;
-    font-size: 12px;
-}
-
-/* Ikony */
-.dashicons {
-    font-size: 16px;
-    line-height: 1;
-}
-
-.dashicons-yes-alt {
-    color: #46b450;
-}
-
-.dashicons-dismiss {
-    color: #dc3232;
-}
-
-.dashicons-edit {
-    color: #666;
-}
-
-/* Formularze */
-.form-table {
-    background: #fff;
+/* ========== PODGLĄD NA ŻYWO ========== */
+.nai-preview-section {
+    background: #f8f9fa;
+    border: 1px solid #c3c4c7;
+    border-radius: 6px;
+    padding: 15px;
     margin: 15px 0;
 }
 
-.form-table th {
-    padding: 12px 10px;
-    background: #f7f7f7;
+.nai-preview-section h5 {
+    margin: 0 0 10px 0;
+    color: #1d2327;
+    font-size: 14px;
     font-weight: 600;
-    color: #555;
-    font-size: 13px;
-    width: 200px;
 }
 
-.form-table td {
-    padding: 12px 10px;
-    font-size: 13px;
+/* ========== RESPONSYWNOŚĆ ========== */
+@media (max-width: 1200px) {
+    .nai-grid-3 {
+        grid-template-columns: 1fr 1fr;
+    }
 }
 
-.form-table .description {
-    margin-top: 4px;
-    color: #666;
-    font-size: 12px;
-    line-height: 1.3;
-}
-
-.form-table input[type="checkbox"] {
-    margin-right: 6px;
-}
-
-/* Komunikaty */
-.notice {
-    margin: 12px 0;
-    padding: 8px 12px;
-    border-radius: 3px;
-    border-left-width: 3px;
-    font-size: 13px;
-}
-
-.notice p {
-    margin: 0;
-    padding: 2px 0;
-}
-
-/* Responsywność */
 @media (max-width: 768px) {
+    .nai-grid-2,
+    .nai-grid-3 {
+        grid-template-columns: 1fr;
+    }
+    
+    .nai-nav-tabs ul {
+        flex-direction: column;
+    }
+    
+    .nai-nav-tab {
+        text-align: center;
+        border-bottom: 1px solid #c3c4c7;
+        border-left: 3px solid transparent;
+    }
+    
+    .nai-nav-tab.active {
+        border-bottom-color: #c3c4c7;
+        border-left-color: #2271b1;
+    }
+    
     .nai-stats-grid {
-        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-        gap: 8px;
-    }
-    
-    .nai-stat-box {
-        padding: 10px 8px;
-    }
-    
-    .nai-stat-number {
-        font-size: 16px;
+        grid-template-columns: 1fr 1fr;
     }
     
     .nai-users-table {
-        font-size: 11px;
+        font-size: 12px;
     }
     
-    .nai-users-table .column-name,
-    .nai-users-table .column-email {
-        display: none;
-    }
-    
-    #nai-user-search {
-        max-width: none;
-    }
-    
-    .nai-users-controls,
-    .nai-search-box {
-        padding: 10px;
-    }
-    
-    .form-table th,
-    .form-table td {
+    .nai-users-table th,
+    .nai-users-table td {
         padding: 8px;
     }
     
-    .form-table th {
+    .nai-metabox-content {
+        padding: 15px;
+    }
+    
+    .nai-form-table th,
+    .nai-form-table td {
+        padding: 10px 5px;
+    }
+    
+    .nai-form-table th {
         width: 120px;
     }
 }
 
 @media (max-width: 480px) {
     .nai-stats-grid {
-        grid-template-columns: 1fr 1fr;
+        grid-template-columns: 1fr;
     }
     
-    .nai-users-table th,
-    .nai-users-table td {
-        padding: 4px 3px;
-        font-size: 10px;
+    .nai-btn {
+        padding: 8px 16px;
+        font-size: 12px;
     }
     
-    .button {
+    .nai-users-table {
         font-size: 11px;
-        padding: 4px 8px;
     }
     
-    .nai-switch {
-        width: 32px;
-        height: 16px;
-    }
-    
-    .nai-slider:before {
-        height: 12px;
-        width: 12px;
-    }
-    
-    input:checked + .nai-slider:before {
-        transform: translateX(16px);
+    .nai-form-field input[type="text"],
+    .nai-form-field input[type="url"],
+    .nai-form-field input[type="email"],
+    .nai-form-field textarea,
+    .nai-form-field select {
+        max-width: none;
     }
 }
 
-/* Utility classes */
+/* ========== ACCESSIBILITY ========== */
+.nai-btn:focus,
+.nai-nav-tab:focus,
+input:focus,
+textarea:focus,
+select:focus {
+    outline: 2px solid #2271b1;
+    outline-offset: 2px;
+}
+
+.screen-reader-text {
+    clip: rect(1px, 1px, 1px, 1px);
+    position: absolute !important;
+    height: 1px;
+    width: 1px;
+    overflow: hidden;
+}
+
+/* ========== UTILITIES ========== */
 .nai-text-center { text-align: center; }
+.nai-text-right { text-align: right; }
 .nai-mb-0 { margin-bottom: 0 !important; }
 .nai-mt-0 { margin-top: 0 !important; }
+.nai-p-0 { padding: 0 !important; }
+.nai-hidden { display: none !important; }
+.nai-sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); border: 0; }
 
-/* Focus states dla accessibility */
-.button:focus,
-input:focus,
-.nai-slider:focus {
-    box-shadow: 0 0 0 1px #0073aa;
-    outline: none;
+/* ========== LAYOUT STRONY UŻYTKOWNIKÓW ========== */
+
+/* Główny kontener z użytkownikami - 75% / 25% */
+.nai-users-layout {
+    display: grid;
+    grid-template-columns: 3fr 1fr;
+    gap: 20px;
+    margin-top: 20px;
 }
 
-/* Hover effects */
-.nai-users-table tr:hover td {
-    background-color: #f9f9f9;
+.nai-users-main {
+    /* Główna kolumna z listą użytkowników */
 }
 
-.button:not(:disabled):hover {
-    transform: none; /* Bez animacji - prosty hover */
+.nai-users-sidebar {
+    /* Sidebar z narzędziami */
 }
 
-/* Spinner override */
-.spinner.is-active {
-    background-image: url("data:image/svg+xml;charset=utf8,%3Csvg width='20' height='20' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M10 3v3l4-4-4-4v3c-5.5 0-10 4.5-10 10 0 2.4.8 4.6 2.2 6.3l1.5-1.5C2.6 14.6 2 12.4 2 10c0-4.4 3.6-8 8-8zm6.3 2.2l-1.5 1.5C15.4 5.4 16 7.6 16 10c0 4.4-3.6 8-8 8v-3l-4 4 4 4v-3c5.5 0 10-4.5 10-10 0-2.4-.8-4.6-2.2-6.3z' fill='%23666'/%3E%3C/svg%3E");
-    width: 16px;
-    height: 16px;
+/* Wyszukiwarka w głównej kolumnie */
+.nai-users-main .nai-search-box {
+    margin-bottom: 20px;
+}
+
+/* Kompaktowe metaboxy w sidebarze */
+.nai-users-sidebar .nai-metabox {
+    margin-bottom: 15px;
+}
+
+.nai-users-sidebar .nai-metabox-content {
+    padding: 15px;
+}
+
+.nai-users-sidebar .nai-form-field {
+    margin-bottom: 15px;
+}
+
+.nai-users-sidebar .nai-form-field:last-child {
+    margin-bottom: 0;
+}
+
+/* Przyciski w sidebarze na całą szerokość */
+.nai-users-sidebar .nai-btn {
+    display: block;
+    text-align: center;
+    box-sizing: border-box;
+}
+
+/* Kompaktowy tekst w sidebarze */
+.nai-users-sidebar p.description {
+    font-size: 12px;
+    line-height: 1.3;
+    margin-top: 5px;
+}
+
+/* Responsywność dla układu użytkowników */
+@media (max-width: 1200px) {
+    .nai-users-layout {
+        grid-template-columns: 2fr 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .nai-users-layout {
+        grid-template-columns: 1fr;
+    }
+    
+    .nai-users-sidebar {
+        order: -1; /* Sidebar na górze na mobile */
+    }
+    
+    .nai-users-sidebar .nai-metabox {
+        margin-bottom: 20px;
+    }
+}
+
+/* Lepsze odstępy w tabeli użytkowników */
+.nai-users-main .nai-users-table th,
+.nai-users-main .nai-users-table td {
+    padding: 10px 8px;
+}
+
+/* Kompaktowe nagłówki w sidebarze */
+.nai-users-sidebar .nai-metabox-header h3 {
+    font-size: 14px;
 }

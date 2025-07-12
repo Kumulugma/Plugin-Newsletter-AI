@@ -90,6 +90,7 @@ class Newsletter_AI {
         add_action('wp_ajax_nai_bulk_create_consent_field', array($this->consent_manager, 'ajax_bulk_create_consent_field'));
         add_action('wp_ajax_nai_update_user_consent', array($this->consent_manager, 'ajax_update_user_consent'));
         add_action('wp_ajax_nai_get_users_table', array($this->consent_manager, 'ajax_get_users_table'));
+        add_action('wp_ajax_nai_export_csv', array($this->consent_manager, 'ajax_export_csv'));
         
         // Debug - sprawdź czy klasy istnieją
         if (!$this->xml_generator) {
