@@ -1,0 +1,1095 @@
+/* Grupa przycisków w/**
+ * Newsletter AI - Admin Styles
+ * Minimalistyczny i funkcjonalny design
+ */
+
+/* Reset i podstawy */
+.nai-xml-settings,
+.nai-users-consent {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    font-size: 13px;
+    line-height: 1.4;
+}
+
+/* Główne kontenery */
+.wrap .nai-xml-settings,
+.wrap .nai-users-consent {
+    max-width: 1200px;
+}
+
+/* Boxes */
+.nai-stats-box,
+.nai-info-box,
+.nai-warning-box {
+    margin: 15px 0;
+    padding: 12px 15px;
+    border-radius: 3px;
+    font-size: 13px;
+}
+
+.nai-stats-box {
+    background: #f7f7f7;
+    border: 1px solid #ddd;
+    border-left: 3px solid #666;
+}
+
+.nai-info-box {
+    background: #e7f3ff;
+    border: 1px solid #b3d9ff;
+    border-left: 3px solid #0073aa;
+}
+
+.nai-warning-box {
+    background: #fff8e5;
+    border: 1px solid #ffb900;
+    border-left: 3px solid #f56e28;
+}
+
+.nai-stats-box h3,
+.nai-info-box h4,
+.nai-warning-box h4 {
+    margin: 0 0 8px 0;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.nai-stats-box p,
+.nai-info-box p,
+.nai-warning-box p {
+    margin: 4px 0;
+    line-height: 1.4;
+}
+
+/* Siatka statystyk */
+.nai-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 12px;
+    margin: 15px 0;
+}
+
+.nai-stat-box {
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    padding: 15px 10px;
+    text-align: center;
+    transition: border-color 0.2s;
+}
+
+.nai-stat-box:hover {
+    border-color: #0073aa;
+}
+
+.nai-stat-number {
+    font-size: 20px;
+    font-weight: 700;
+    color: #0073aa;
+    line-height: 1;
+    margin-bottom: 4px;
+}
+
+.nai-stat-label {
+    font-size: 11px;
+    color: #666;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 500;
+}
+
+/* Kontrolki */
+.nai-users-controls {
+    background: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    padding: 15px;
+    margin: 15px 0;
+}
+
+.nai-users-controls h3 {
+    margin: 0 0 12px 0;
+    font-size: 14px;
+    font-weight: 600;
+    color: #23282d;
+}
+
+.nai-users-controls > div {
+    margin-bottom: 12px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #eee;
+}
+
+.nai-users-controls > div:last-child {
+    margin-bottom: 0;
+    padding-bottom: 0;
+    border-bottom: none;
+}
+
+/* Wyszukiwarka */
+.nai-search-box {
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    padding: 12px;
+    margin: 15px 0;
+}
+
+.nai-search-box h3 {
+    margin: 0 0 8px 0;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+/* MAŁE INPUTY */
+#nai-user-search,
+.nai-xml-settings input[type="text"],
+.nai-xml-settings input[type="url"] {
+    width: 100%;
+    max-width: 300px;
+    padding: 6px 8px;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    font-size: 13px;
+    background: #fff;
+    transition: border-color 0.2s;
+}
+
+#nai-user-search:focus,
+.nai-xml-settings input[type="text"]:focus,
+.nai-xml-settings input[type="url"]:focus {
+    border-color: #0073aa;
+    box-shadow: 0 0 0 1px #0073aa;
+    outline: none;
+}
+
+/* FANCY PRZYCISKI */
+.button.button-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+    color: #fff;
+    font-size: 12px;
+    padding: 8px 16px;
+    height: auto;
+    line-height: 1.2;
+    border-radius: 6px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+    cursor: pointer;
+}
+
+.button.button-primary::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    transition: left 0.5s;
+}
+
+.button.button-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+    background: linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%);
+}
+
+.button.button-primary:hover::before {
+    left: 100%;
+}
+
+.button.button-primary:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 5px rgba(102, 126, 234, 0.3);
+}
+
+.button.button-secondary {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    border: none;
+    color: #fff;
+    font-size: 12px;
+    padding: 8px 16px;
+    height: auto;
+    line-height: 1.2;
+    border-radius: 6px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 2px 8px rgba(240, 147, 251, 0.3);
+    cursor: pointer;
+}
+
+.button.button-secondary::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    transition: left 0.5s;
+}
+
+.button.button-secondary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(240, 147, 251, 0.4);
+    background: linear-gradient(135deg, #e879f9 0%, #ec4899 100%);
+}
+
+.button.button-secondary:hover::before {
+    left: 100%;
+}
+
+.button.button-secondary:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 5px rgba(240, 147, 251, 0.3);
+}
+
+/* Specjalne przyciski dla różnych akcji */
+.button.nai-generate-btn {
+    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    border: none;
+    color: #fff;
+    font-size: 13px;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 15px rgba(79, 172, 254, 0.4);
+    cursor: pointer;
+}
+
+.button.nai-generate-btn::after {
+    content: '⚡';
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 14px;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.button.nai-generate-btn:hover {
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 6px 20px rgba(79, 172, 254, 0.5);
+    padding-right: 35px;
+}
+
+.button.nai-generate-btn:hover::after {
+    opacity: 1;
+}
+
+.button.nai-delete-btn {
+    background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
+    border: none;
+    color: #fff;
+    font-size: 12px;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-weight: 600;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 2px 8px rgba(255, 154, 158, 0.3);
+}
+
+.button.nai-delete-btn:hover {
+    background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(255, 107, 107, 0.4);
+}
+
+.button.nai-success-btn {
+    background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+    border: none;
+    color: #2d3748;
+    font-size: 12px;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-weight: 600;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 2px 8px rgba(168, 237, 234, 0.3);
+}
+
+.button.nai-success-btn:hover {
+    background: linear-gradient(135deg, #81e6d9 0%, #fbb6ce 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(129, 230, 217, 0.4);
+}
+
+.button.button-large {
+    font-size: 14px;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-weight: 700;
+    letter-spacing: 0.8px;
+}
+
+.button.button-small {
+    font-size: 10px;
+    padding: 4px 10px;
+    height: auto;
+    line-height: 1.2;
+    border-radius: 4px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+/* Przycisk z ikoną */
+.button.nai-icon-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+    color: #fff;
+    font-size: 12px;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-weight: 600;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+}
+
+.button.nai-icon-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+    gap: 8px;
+}
+
+.button.nai-icon-btn .dashicons {
+    font-size: 14px;
+    transition: transform 0.3s;
+}
+
+.button.nai-icon-btn:hover .dashicons {
+    transform: scale(1.1);
+}
+
+/* Loading state dla przycisków */
+.button.nai-loading {
+    position: relative;
+    color: transparent !important;
+    pointer-events: none;
+}
+
+.button.nai-loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 14px;
+    height: 14px;
+    border: 2px solid rgba(255,255,255,0.3);
+    border-top: 2px solid #fff;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: translate(-50%, -50%) rotate(0deg); }
+    100% { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+/* Przyciski grupowe */
+.nai-button-group {
+    display: inline-flex;
+    border-radius: 6px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.nai-button-group .button {
+    border-radius: 0;
+    margin: 0;
+    border-right: 1px solid rgba(255,255,255,0.2);
+}
+
+.nai-button-group .button:first-child {
+    border-radius: 6px 0 0 6px;
+}
+
+.nai-button-group .button:last-child {
+    border-radius: 0 6px 6px 0;
+    border-right: none;
+}
+
+.nai-button-group .button:only-child {
+    border-radius: 6px;
+    border-right: none;
+}
+
+/* Floating action button */
+.nai-fab {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+    color: #fff;
+    font-size: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 20px rgba(102, 126, 234, 0.4);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+    z-index: 1000;
+}
+
+.nai-fab:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 25px rgba(102, 126, 234, 0.5);
+}
+
+.nai-fab:active {
+    transform: scale(0.95);
+}
+
+/* Pulse animation dla ważnych przycisków */
+@keyframes pulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(102, 126, 234, 0.7);
+    }
+    70% {
+        box-shadow: 0 0 0 10px rgba(102, 126, 234, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(102, 126, 234, 0);
+    }
+}
+
+.button.nai-pulse {
+    animation: pulse 2s infinite;
+}
+
+/* Disabled state */
+.button:disabled,
+.button.disabled {
+    background: #e2e8f0 !important;
+    color: #a0aec0 !important;
+    cursor: not-allowed !important;
+    transform: none !important;
+    box-shadow: none !important;
+}
+
+.button:disabled::before,
+.button.disabled::before {
+    display: none;
+}
+
+/* Focus states */
+.button:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.5);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .button {
+        font-size: 11px;
+        padding: 6px 12px;
+    }
+    
+    .button.button-large {
+        font-size: 12px;
+        padding: 8px 16px;
+    }
+    
+    .nai-fab {
+        width: 48px;
+        height: 48px;
+        bottom: 20px;
+        right: 20px;
+        font-size: 20px;
+    }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+    .button.button-primary {
+        background: linear-gradient(135deg, #4c51bf 0%, #553c9a 100%);
+    }
+    
+    .button.button-secondary {
+        background: linear-gradient(135deg, #d53f8c 0%, #b83280 100%);
+    }
+}
+
+/* FANCY PRZYCISKI W TABELI */
+.nai-users-table .button {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+    color: #fff;
+    font-size: 10px;
+    padding: 4px 8px;
+    height: 24px;
+    line-height: 1;
+    border-radius: 4px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 1px 4px rgba(102, 126, 234, 0.3);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 28px;
+}
+
+.nai-users-table .button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+    transition: left 0.4s;
+}
+
+.nai-users-table .button:hover {
+    transform: translateY(-1px) scale(1.05);
+    box-shadow: 0 2px 8px rgba(102, 126, 234, 0.4);
+    background: linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%);
+}
+
+.nai-users-table .button:hover::before {
+    left: 100%;
+}
+
+.nai-users-table .button:active {
+    transform: translateY(0) scale(1);
+    box-shadow: 0 1px 3px rgba(102, 126, 234, 0.3);
+}
+
+/* Specjalne przyciski w tabeli */
+.nai-users-table .button.nai-edit-btn {
+    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    box-shadow: 0 1px 4px rgba(79, 172, 254, 0.3);
+}
+
+.nai-users-table .button.nai-edit-btn:hover {
+    background: linear-gradient(135deg, #3182ce 0%, #0bc5ea 100%);
+    box-shadow: 0 2px 8px rgba(79, 172, 254, 0.4);
+}
+
+.nai-users-table .button.nai-delete-btn {
+    background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
+    box-shadow: 0 1px 4px rgba(255, 154, 158, 0.3);
+}
+
+.nai-users-table .button.nai-delete-btn:hover {
+    background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
+    box-shadow: 0 2px 8px rgba(255, 107, 107, 0.4);
+}
+
+.nai-users-table .button.nai-view-btn {
+    background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+    color: #2d3748;
+    box-shadow: 0 1px 4px rgba(168, 237, 234, 0.3);
+}
+
+.nai-users-table .button.nai-view-btn:hover {
+    background: linear-gradient(135deg, #81e6d9 0%, #fbb6ce 100%);
+    box-shadow: 0 2px 8px rgba(129, 230, 217, 0.4);
+}
+
+/* Ikony w przyciskach tabeli */
+.nai-users-table .button .dashicons {
+    font-size: 12px;
+    line-height: 1;
+    width: 12px;
+    height: 12px;
+    color: #fff !important;
+    transition: transform 0.3s;
+}
+
+.nai-users-table .button:hover .dashicons {
+    transform: scale(1.1) rotate(5deg);
+    color: #fff !important;
+}
+
+/* Override dla wszystkich ikon w przyciskach */
+.nai-users-table .button .dashicons-edit,
+.nai-users-table .button .dashicons-trash,
+.nai-users-table .button .dashicons-visibility,
+.nai-users-table .button .dashicons-admin-users,
+.nai-users-table .button .dashicons-yes,
+.nai-users-table .button .dashicons-no-alt {
+    color: #fff !important;
+}
+
+/* Specjalne kolory dla przycisków view (zielone) */
+.nai-users-table .button.nai-view-btn .dashicons {
+    color: #2d3748 !important;
+}
+
+.nai-users-table .button.nai-view-btn:hover .dashicons {
+    color: #2d3748 !important;
+}
+
+/* Przyciski tylko z ikonami */
+.nai-users-table .button.nai-icon-only {
+    width: 24px;
+    height: 24px;
+    padding: 0;
+    border-radius: 50%;
+}
+
+.nai-users-table .button.nai-icon-only:hover {
+    border-radius: 4px;
+}
+
+/* Grupa przycisków w komórce */
+.nai-users-table .nai-table-actions {
+    display: flex;
+    gap: 3px;
+    justify-content: center;
+    align-items: center;
+}
+
+.nai-users-table .nai-table-actions .button {
+    margin: 0;
+}
+
+/* Przyciski z tooltipami */
+.nai-users-table .button[title] {
+    position: relative;
+}
+
+.nai-users-table .button[title]:hover::after {
+    content: attr(title);
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0,0,0,0.8);
+    color: white;
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-size: 10px;
+    white-space: nowrap;
+    z-index: 1000;
+    margin-bottom: 2px;
+}
+
+/* Loading state dla przycisków w tabeli */
+.nai-users-table .button.nai-loading {
+    position: relative;
+    color: transparent !important;
+    pointer-events: none;
+}
+
+.nai-users-table .button.nai-loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 10px;
+    height: 10px;
+    border: 1px solid rgba(255,255,255,0.3);
+    border-top: 1px solid #fff;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+/* Disabled state dla przycisków w tabeli */
+.nai-users-table .button:disabled,
+.nai-users-table .button.disabled {
+    background: #e2e8f0 !important;
+    color: #a0aec0 !important;
+    cursor: not-allowed !important;
+    transform: none !important;
+    box-shadow: none !important;
+    opacity: 0.6;
+}
+
+/* Hover effect dla całego wiersza gdy hover na przycisk */
+.nai-users-table tr:hover .button {
+    opacity: 1;
+    visibility: visible;
+}
+
+.nai-users-table .button {
+    opacity: 0.8;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Focus states */
+.nai-users-table .button:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.5);
+    z-index: 1;
+}
+
+/* Responsywność dla przycisków w tabeli */
+@media (max-width: 768px) {
+    .nai-users-table .button {
+        font-size: 9px;
+        padding: 3px 6px;
+        height: 20px;
+        min-width: 24px;
+    }
+    
+    .nai-users-table .button .dashicons {
+        font-size: 10px;
+        width: 10px;
+        height: 10px;
+    }
+    
+    .nai-users-table .button.nai-icon-only {
+        width: 20px;
+        height: 20px;
+    }
+    
+    .nai-users-table .nai-table-actions {
+        gap: 2px;
+    }
+}
+
+@media (max-width: 480px) {
+    .nai-users-table .button {
+        font-size: 8px;
+        padding: 2px 4px;
+        height: 18px;
+        min-width: 20px;
+    }
+    
+    .nai-users-table .button .dashicons {
+        font-size: 8px;
+        width: 8px;
+        height: 8px;
+    }
+    
+    .nai-users-table .button.nai-icon-only {
+        width: 18px;
+        height: 18px;
+    }
+}
+
+/* Animacja pojawiania się przycisków */
+@keyframes buttonSlideIn {
+    from {
+        opacity: 0;
+        transform: translateX(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.nai-users-table .button {
+    animation: buttonSlideIn 0.3s ease;
+}
+
+/* Specjalne efekty */
+.nai-users-table .button.nai-glow {
+    box-shadow: 0 0 10px rgba(102, 126, 234, 0.5);
+    animation: glow 2s infinite alternate;
+}
+
+@keyframes glow {
+    from {
+        box-shadow: 0 0 5px rgba(102, 126, 234, 0.5);
+    }
+    to {
+        box-shadow: 0 0 15px rgba(102, 126, 234, 0.8);
+    }
+}
+
+/* Wartości zgody bez przełącznika */
+.nai-consent-yes {
+    display: inline-block;
+    background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+    color: #155724;
+    border: 1px solid #c3e6cb;
+    padding: 3px 8px;
+    border-radius: 3px;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 10px;
+    letter-spacing: 0.5px;
+}
+
+.nai-consent-no {
+    display: inline-block;
+    background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+    padding: 3px 8px;
+    border-radius: 3px;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 10px;
+    letter-spacing: 0.5px;
+}
+
+.nai-consent-value {
+    font-size: 9px;
+    color: #666;
+    font-style: italic;
+    margin-top: 2px;
+    display: block;
+}
+
+/* Loading */
+.nai-loading {
+    text-align: center;
+    padding: 30px 15px;
+    color: #666;
+    font-size: 13px;
+}
+
+.nai-loading .spinner {
+    margin-right: 6px;
+}
+
+/* Status generowania XML */
+#nai-xml-generation-status {
+    font-weight: 600;
+    font-size: 12px;
+}
+
+#nai-xml-generation-status .spinner {
+    margin: 0 6px;
+}
+
+/* Paginacja */
+.tablenav {
+    background: #f7f7f7;
+    padding: 8px 12px;
+    font-size: 12px;
+}
+
+.tablenav-pages {
+    float: right;
+}
+
+.displaying-num {
+    color: #666;
+    font-size: 12px;
+    margin-right: 10px;
+}
+
+.pagination-links .button,
+.pagination-links .page-numbers {
+    padding: 4px 6px;
+    margin: 0 1px;
+    text-decoration: none;
+    border: 1px solid #ddd;
+    background: #fff;
+    color: #555;
+    font-size: 11px;
+    border-radius: 2px;
+    min-width: 24px;
+    height: 24px;
+    line-height: 14px;
+    text-align: center;
+    display: inline-block;
+}
+
+.pagination-links .button:hover,
+.pagination-links .page-numbers:hover {
+    background: #f7f7f7;
+    border-color: #999;
+}
+
+.pagination-links .button.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.paging-input {
+    color: #555;
+    font-weight: 500;
+    padding: 4px 8px;
+    font-size: 12px;
+}
+
+/* Ikony */
+.dashicons {
+    font-size: 16px;
+    line-height: 1;
+}
+
+.dashicons-yes-alt {
+    color: #46b450;
+}
+
+.dashicons-dismiss {
+    color: #dc3232;
+}
+
+.dashicons-edit {
+    color: #666;
+}
+
+/* Formularze */
+.form-table {
+    background: #fff;
+    margin: 15px 0;
+}
+
+.form-table th {
+    padding: 12px 10px;
+    background: #f7f7f7;
+    font-weight: 600;
+    color: #555;
+    font-size: 13px;
+    width: 200px;
+}
+
+.form-table td {
+    padding: 12px 10px;
+    font-size: 13px;
+}
+
+.form-table .description {
+    margin-top: 4px;
+    color: #666;
+    font-size: 12px;
+    line-height: 1.3;
+}
+
+.form-table input[type="checkbox"] {
+    margin-right: 6px;
+}
+
+/* Komunikaty */
+.notice {
+    margin: 12px 0;
+    padding: 8px 12px;
+    border-radius: 3px;
+    border-left-width: 3px;
+    font-size: 13px;
+}
+
+.notice p {
+    margin: 0;
+    padding: 2px 0;
+}
+
+/* Responsywność */
+@media (max-width: 768px) {
+    .nai-stats-grid {
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+        gap: 8px;
+    }
+    
+    .nai-stat-box {
+        padding: 10px 8px;
+    }
+    
+    .nai-stat-number {
+        font-size: 16px;
+    }
+    
+    .nai-users-table {
+        font-size: 11px;
+    }
+    
+    .nai-users-table .column-name,
+    .nai-users-table .column-email {
+        display: none;
+    }
+    
+    #nai-user-search {
+        max-width: none;
+    }
+    
+    .nai-users-controls,
+    .nai-search-box {
+        padding: 10px;
+    }
+    
+    .form-table th,
+    .form-table td {
+        padding: 8px;
+    }
+    
+    .form-table th {
+        width: 120px;
+    }
+}
+
+@media (max-width: 480px) {
+    .nai-stats-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+    
+    .nai-users-table th,
+    .nai-users-table td {
+        padding: 4px 3px;
+        font-size: 10px;
+    }
+    
+    .button {
+        font-size: 11px;
+        padding: 4px 8px;
+    }
+    
+    .nai-switch {
+        width: 32px;
+        height: 16px;
+    }
+    
+    .nai-slider:before {
+        height: 12px;
+        width: 12px;
+    }
+    
+    input:checked + .nai-slider:before {
+        transform: translateX(16px);
+    }
+}
+
+/* Utility classes */
+.nai-text-center { text-align: center; }
+.nai-mb-0 { margin-bottom: 0 !important; }
+.nai-mt-0 { margin-top: 0 !important; }
+
+/* Focus states dla accessibility */
+.button:focus,
+input:focus,
+.nai-slider:focus {
+    box-shadow: 0 0 0 1px #0073aa;
+    outline: none;
+}
+
+/* Hover effects */
+.nai-users-table tr:hover td {
+    background-color: #f9f9f9;
+}
+
+.button:not(:disabled):hover {
+    transform: none; /* Bez animacji - prosty hover */
+}
+
+/* Spinner override */
+.spinner.is-active {
+    background-image: url("data:image/svg+xml;charset=utf8,%3Csvg width='20' height='20' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M10 3v3l4-4-4-4v3c-5.5 0-10 4.5-10 10 0 2.4.8 4.6 2.2 6.3l1.5-1.5C2.6 14.6 2 12.4 2 10c0-4.4 3.6-8 8-8zm6.3 2.2l-1.5 1.5C15.4 5.4 16 7.6 16 10c0 4.4-3.6 8-8 8v-3l-4 4 4 4v-3c5.5 0 10-4.5 10-10 0-2.4-.8-4.6-2.2-6.3z' fill='%23666'/%3E%3C/svg%3E");
+    width: 16px;
+    height: 16px;
+}
