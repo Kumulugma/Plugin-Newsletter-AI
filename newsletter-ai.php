@@ -80,6 +80,7 @@ function newsletter_ai_load_classes() {
         'class-customer-validator.php',
         'class-dashboard-widget.php',
         'class-orders-generator.php',
+        'class-email-export.php',
         'class-admin-pages.php',
         'class-user-profile.php',
         'class-frontend-consent.php'

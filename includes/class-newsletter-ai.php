@@ -57,6 +57,7 @@ private function init() {
     $this->customer_validator = new Newsletter_AI_Customer_Validator();
     $this->dashboard_widget = new Newsletter_AI_Dashboard_Widget();    
     $this->orders_generator = new Newsletter_AI_Orders_Generator();
+    $this->email_export = new Newsletter_AI_Email_Export();
     $this->admin_pages = new Newsletter_AI_Admin_Pages();
     $this->user_profile = new Newsletter_AI_User_Profile();
     $this->frontend_consent = new Newsletter_AI_Frontend_Consent();
@@ -98,7 +99,9 @@ private function init() {
         add_action('wp_ajax_nai_export_csv', array($this->consent_manager, 'ajax_export_csv'));
         add_action('wp_ajax_nai_export_guests_csv', array($this->frontend_consent, 'ajax_export_guests_csv'));
         add_action('wp_ajax_nai_generate_xml', array($this->xml_generator, 'ajax_generate_xml'));
-        add_action('wp_ajax_nai_generate_orders_xml', array($this->orders_generator, 'ajax_generate_orders_xml')); // NOWE
+        add_action('wp_ajax_nai_generate_orders_xml', array($this->orders_generator, 'ajax_generate_orders_xml')); 
+        add_action('wp_ajax_nai_export_emails_csv', array($this->email_export, 'ajax_export_emails_csv'));
+add_action('wp_ajax_nai_get_emails_text', array($this->email_export, 'ajax_get_emails_text'));
     
            
         // Debug - sprawdź czy klasy istnieją

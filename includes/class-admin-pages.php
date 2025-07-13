@@ -89,6 +89,15 @@ class Newsletter_AI_Admin_Pages {
                 array($this, 'test_page')
         );
 
+        add_submenu_page(
+                'newsletter-ai',
+                __('Eksport adresów email', 'newsletter-ai'),
+                __('Eksport adresów email', 'newsletter-ai'),
+                'manage_options',
+                'newsletter-ai-emails',
+                array($this, 'emails_page')
+        );
+
         // Zakładka cron
         add_submenu_page(
                 'newsletter-ai',
@@ -291,7 +300,7 @@ class Newsletter_AI_Admin_Pages {
                                     </div>
                                     <div class="nai-stat-card">
                                         <div class="nai-stat-number"><?php echo esc_html($stats['users_with_consent']); ?></div>
-                                        <div class="nai-stat-label"><?php _e('Z zgodą', 'newsletter-ai'); ?></div>
+                                        <div class="nai-stat-label"><?php _e('Ze zgodą', 'newsletter-ai'); ?></div>
                                     </div>
                                     <div class="nai-stat-card">
                                         <div class="nai-stat-number"><?php echo esc_html($stats['users_without_consent']); ?></div>
@@ -720,11 +729,11 @@ class Newsletter_AI_Admin_Pages {
                         <div class="nai-stats-grid">
                             <div class="nai-stat-card">
                                 <div class="nai-stat-number"><?php echo esc_html($frontend_stats['registrations_with_consent'] ?? 0); ?></div>
-                                <div class="nai-stat-label"><?php _e('Rejestracje z zgodą', 'newsletter-ai'); ?></div>
+                                <div class="nai-stat-label"><?php _e('Rejestracje ze zgodą', 'newsletter-ai'); ?></div>
                             </div>
                             <div class="nai-stat-card">
                                 <div class="nai-stat-number"><?php echo esc_html($frontend_stats['checkout_with_consent'] ?? 0); ?></div>
-                                <div class="nai-stat-label"><?php _e('Checkout z zgodą', 'newsletter-ai'); ?></div>
+                                <div class="nai-stat-label"><?php _e('Checkout ze zgodą', 'newsletter-ai'); ?></div>
                             </div>
                             <div class="nai-stat-card">
                                 <div class="nai-stat-number"><?php echo esc_html($frontend_stats['myaccount_changes'] ?? 0); ?></div>
@@ -930,9 +939,9 @@ class Newsletter_AI_Admin_Pages {
                                 <div class="nai-metabox-content">
                                     <p><?php _e('Jeśli chcesz używać własnych stylów, wyłącz automatyczne ładowanie CSS i dodaj te selektory do swojego motywu:', 'newsletter-ai'); ?></p>
                                     <pre style="background: #f1f1f1; padding: 15px; border-radius: 4px; overflow-x: auto; font-size: 12px;"><code>.nai-consent-wrapper { /* kontener checkbox'a */ }
-                                                                .nai-consent-checkbox { /* sam checkbox */ }
-                                                                .nai-checkout-consent { /* sekcja w checkout */ }
-                                                                .nai-myaccount-consent { /* sekcja w MyAccount */ }</code></pre>
+                                                                        .nai-consent-checkbox { /* sam checkbox */ }
+                                                                        .nai-checkout-consent { /* sekcja w checkout */ }
+                                                                        .nai-myaccount-consent { /* sekcja w MyAccount */ }</code></pre>
                                 </div>
                             </div>
                         </div>
@@ -2062,7 +2071,7 @@ class Newsletter_AI_Admin_Pages {
         $recent_guest_orders = $this->get_recent_guest_orders_with_consent();
         ?>
         <div class="wrap nai-admin-page nai-guests-page">
-            <h1><?php _e('Newsletter AI - Goście z zgodami', 'newsletter-ai'); ?></h1>
+            <h1><?php _e('Newsletter AI - Goście ze zgodami', 'newsletter-ai'); ?></h1>
 
             <!-- Statystyki gości -->
             <div class="nai-metabox">
@@ -2077,7 +2086,7 @@ class Newsletter_AI_Admin_Pages {
                         </div>
                         <div class="nai-stat-card nai-stat-valid">
                             <div class="nai-stat-number"><?php echo esc_html($guest_stats['guests_with_consent']); ?></div>
-                            <div class="nai-stat-label"><?php _e('Z zgodą na newsletter', 'newsletter-ai'); ?></div>
+                            <div class="nai-stat-label"><?php _e('Ze zgodą na newsletter', 'newsletter-ai'); ?></div>
                         </div>
                         <div class="nai-stat-card nai-stat-error">
                             <div class="nai-stat-number"><?php echo esc_html($guest_stats['guests_without_consent']); ?></div>
@@ -2103,11 +2112,11 @@ class Newsletter_AI_Admin_Pages {
                 </div>
             </div>
 
-            <!-- Najnowsi goście z zgodami -->
+            <!-- Najnowsi goście ze zgodami -->
             <?php if (!empty($recent_guest_orders)): ?>
                 <div class="nai-metabox">
                     <div class="nai-metabox-header success">
-                        <h3>🎯 <?php _e('Najnowsi goście z zgodą na newsletter', 'newsletter-ai'); ?></h3>
+                        <h3>🎯 <?php _e('Najnowsi goście ze zgodą na newsletter', 'newsletter-ai'); ?></h3>
                     </div>
                     <div class="nai-metabox-content nai-p-0">
                         <table class="wp-list-table widefat fixed striped">
@@ -2180,14 +2189,14 @@ class Newsletter_AI_Admin_Pages {
                     <h3>🛠️ <?php _e('Narzędzia', 'newsletter-ai'); ?></h3>
                 </div>
                 <div class="nai-metabox-content">
-                    <p><?php _e('Eksportuj dane gości z zgodami na newsletter:', 'newsletter-ai'); ?></p>
+                    <p><?php _e('Eksportuj dane gości ze zgodami na newsletter:', 'newsletter-ai'); ?></p>
 
                     <div class="nai-grid nai-grid-3">
                         <div>
                             <button type="button" id="nai-export-guests-csv" class="nai-btn nai-btn-primary" style="width: 100%;">
                                 📥 <?php _e('Eksportuj CSV', 'newsletter-ai'); ?>
                             </button>
-                            <p class="description"><?php _e('Pobierz wszystkich gości z zgodami jako plik CSV', 'newsletter-ai'); ?></p>
+                            <p class="description"><?php _e('Pobierz wszystkich gości ze zgodami jako plik CSV', 'newsletter-ai'); ?></p>
                         </div>
 
                         <div>
@@ -2302,337 +2311,762 @@ class Newsletter_AI_Admin_Pages {
         LIMIT %d
     ", $limit));
     }
-    
+
     /**
- * NOWA: Strona XML zamówień
- */
-public function orders_page() {
-    // Sprawdź czy klasa generator istnieje
-    if (!class_exists('Newsletter_AI_Orders_Generator')) {
-        echo '<div class="wrap"><div class="notice notice-error"><p>Błąd: klasa Newsletter_AI_Orders_Generator nie jest dostępna.</p></div></div>';
-        return;
-    }
-    
-    $orders_generator = new Newsletter_AI_Orders_Generator();
-    $consent_manager = new Newsletter_AI_Consent_Manager();
-    
-    $orders_stats = $orders_generator->get_last_orders_generation_stats();
-    $orders_file_info = $orders_generator->get_orders_xml_file_info();
-    $consent_stats = $consent_manager->get_consent_statistics();
-    ?>
-    <div class="wrap nai-admin-page">
-        <h1><?php _e('Newsletter AI - XML - Zamówienia', 'newsletter-ai'); ?></h1>
+     * NOWA: Strona XML zamówień
+     */
+    public function orders_page() {
+        // Sprawdź czy klasa generator istnieje
+        if (!class_exists('Newsletter_AI_Orders_Generator')) {
+            echo '<div class="wrap"><div class="notice notice-error"><p>Błąd: klasa Newsletter_AI_Orders_Generator nie jest dostępna.</p></div></div>';
+            return;
+        }
 
-        <?php settings_errors('nai_settings'); ?>
+        $orders_generator = new Newsletter_AI_Orders_Generator();
+        $consent_manager = new Newsletter_AI_Consent_Manager();
 
-        <div class="nai-grid nai-grid-2">
-            <!-- Kolumna lewa - główne informacje -->
-            <div>
-                <!-- Statystyki ostatniego generowania -->
-                <?php if (!empty($orders_stats)): ?>
+        $orders_stats = $orders_generator->get_last_orders_generation_stats();
+        $orders_file_info = $orders_generator->get_orders_xml_file_info();
+        $consent_stats = $consent_manager->get_consent_statistics();
+        ?>
+        <div class="wrap nai-admin-page">
+            <h1><?php _e('Newsletter AI - XML - Zamówienia', 'newsletter-ai'); ?></h1>
+
+            <?php settings_errors('nai_settings'); ?>
+
+            <div class="nai-grid nai-grid-2">
+                <!-- Kolumna lewa - główne informacje -->
+                <div>
+                    <!-- Statystyki ostatniego generowania -->
+                    <?php if (!empty($orders_stats)): ?>
+                        <div class="nai-metabox">
+                            <div class="nai-metabox-header secondary">
+                                <h3>📊 <?php _e('Ostatnie generowanie XML zamówień', 'newsletter-ai'); ?></h3>
+                            </div>
+                            <div class="nai-metabox-content">
+                                <div class="nai-stats-grid">
+                                    <div class="nai-stat-card">
+                                        <div class="nai-stat-number"><?php echo esc_html($orders_stats['total_checked']); ?></div>
+                                        <div class="nai-stat-label"><?php _e('Sprawdzonych zamówień', 'newsletter-ai'); ?></div>
+                                    </div>
+                                    <div class="nai-stat-card nai-stat-valid">
+                                        <div class="nai-stat-number"><?php echo esc_html($orders_stats['processed_orders']); ?></div>
+                                        <div class="nai-stat-label"><?php _e('Wyeksportowanych', 'newsletter-ai'); ?></div>
+                                    </div>
+                                    <div class="nai-stat-card nai-stat-error">
+                                        <div class="nai-stat-number"><?php echo esc_html($orders_stats['skipped_orders']); ?></div>
+                                        <div class="nai-stat-label"><?php _e('Pominiętych (brak zgody)', 'newsletter-ai'); ?></div>
+                                    </div>
+                                </div>
+                                <p><strong><?php _e('Data:', 'newsletter-ai'); ?></strong> <?php echo esc_html($orders_stats['timestamp']); ?></p>
+                                <p><strong><?php _e('Użyte pole zgody:', 'newsletter-ai'); ?></strong> <code><?php echo esc_html($orders_stats['consent_field_used']); ?></code></p>
+                            </div>
+                        </div>
+                    <?php endif; ?>
+
+                    <!-- Informacje o pliku XML -->
                     <div class="nai-metabox">
-                        <div class="nai-metabox-header secondary">
-                            <h3>📊 <?php _e('Ostatnie generowanie XML zamówień', 'newsletter-ai'); ?></h3>
+                        <div class="nai-metabox-header <?php echo $orders_file_info ? 'success' : 'warning'; ?>">
+                            <h3>📄 <?php _e('Plik XML zamówień', 'newsletter-ai'); ?></h3>
+                        </div>
+                        <div class="nai-metabox-content">
+                            <?php if ($orders_file_info): ?>
+                                <p><strong><?php _e('Rozmiar:', 'newsletter-ai'); ?></strong> <?php echo size_format($orders_file_info['size']); ?></p>
+                                <p><strong><?php _e('Ostatnia modyfikacja:', 'newsletter-ai'); ?></strong> <?php echo date('Y-m-d H:i:s', $orders_file_info['modified']); ?></p>
+                                <p><strong><?php _e('URL:', 'newsletter-ai'); ?></strong> <a href="<?php echo esc_url($orders_file_info['url']); ?>" target="_blank" class="nai-btn nai-btn-small nai-btn-secondary"><?php _e('Otwórz plik', 'newsletter-ai'); ?></a></p>
+                            <?php else: ?>
+                                <div class="nai-notice nai-notice-warning">
+                                    <span>⚠️</span>
+                                    <p><?php _e('Plik XML zamówień jeszcze nie został wygenerowany.', 'newsletter-ai'); ?></p>
+                                </div>
+                            <?php endif; ?>
+
+                            <div class="nai-text-center" style="margin-top: 20px;">
+                                <button type="button" id="nai-generate-orders-xml" class="nai-btn nai-btn-primary nai-btn-large">
+                                    ⚡ <?php _e('Wygeneruj XML zamówień teraz', 'newsletter-ai'); ?>
+                                </button>
+                                <div id="nai-orders-xml-generation-status" style="margin-top: 10px;"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Statystyki ogólne -->
+                    <div class="nai-metabox">
+                        <div class="nai-metabox-header">
+                            <h3>📈 <?php _e('Statystyki zgód (użytkownicy)', 'newsletter-ai'); ?></h3>
                         </div>
                         <div class="nai-metabox-content">
                             <div class="nai-stats-grid">
                                 <div class="nai-stat-card">
-                                    <div class="nai-stat-number"><?php echo esc_html($orders_stats['total_checked']); ?></div>
-                                    <div class="nai-stat-label"><?php _e('Sprawdzonych zamówień', 'newsletter-ai'); ?></div>
+                                    <div class="nai-stat-number"><?php echo esc_html($consent_stats['total_users']); ?></div>
+                                    <div class="nai-stat-label"><?php _e('Łącznie użytkowników', 'newsletter-ai'); ?></div>
                                 </div>
                                 <div class="nai-stat-card nai-stat-valid">
-                                    <div class="nai-stat-number"><?php echo esc_html($orders_stats['processed_orders']); ?></div>
-                                    <div class="nai-stat-label"><?php _e('Wyeksportowanych', 'newsletter-ai'); ?></div>
+                                    <div class="nai-stat-number"><?php echo esc_html($consent_stats['users_with_consent']); ?></div>
+                                    <div class="nai-stat-label"><?php _e('Ze zgodą', 'newsletter-ai'); ?></div>
                                 </div>
-                                <div class="nai-stat-card nai-stat-error">
-                                    <div class="nai-stat-number"><?php echo esc_html($orders_stats['skipped_orders']); ?></div>
-                                    <div class="nai-stat-label"><?php _e('Pominiętych (brak zgody)', 'newsletter-ai'); ?></div>
+                                <div class="nai-stat-card">
+                                    <div class="nai-stat-number"><?php echo esc_html($consent_stats['consent_percentage']); ?>%</div>
+                                    <div class="nai-stat-label"><?php _e('Procent zgód', 'newsletter-ai'); ?></div>
                                 </div>
                             </div>
-                            <p><strong><?php _e('Data:', 'newsletter-ai'); ?></strong> <?php echo esc_html($orders_stats['timestamp']); ?></p>
-                            <p><strong><?php _e('Użyte pole zgody:', 'newsletter-ai'); ?></strong> <code><?php echo esc_html($orders_stats['consent_field_used']); ?></code></p>
-                        </div>
-                    </div>
-                <?php endif; ?>
-
-                <!-- Informacje o pliku XML -->
-                <div class="nai-metabox">
-                    <div class="nai-metabox-header <?php echo $orders_file_info ? 'success' : 'warning'; ?>">
-                        <h3>📄 <?php _e('Plik XML zamówień', 'newsletter-ai'); ?></h3>
-                    </div>
-                    <div class="nai-metabox-content">
-                        <?php if ($orders_file_info): ?>
-                            <p><strong><?php _e('Rozmiar:', 'newsletter-ai'); ?></strong> <?php echo size_format($orders_file_info['size']); ?></p>
-                            <p><strong><?php _e('Ostatnia modyfikacja:', 'newsletter-ai'); ?></strong> <?php echo date('Y-m-d H:i:s', $orders_file_info['modified']); ?></p>
-                            <p><strong><?php _e('URL:', 'newsletter-ai'); ?></strong> <a href="<?php echo esc_url($orders_file_info['url']); ?>" target="_blank" class="nai-btn nai-btn-small nai-btn-secondary"><?php _e('Otwórz plik', 'newsletter-ai'); ?></a></p>
-                        <?php else: ?>
-                            <div class="nai-notice nai-notice-warning">
-                                <span>⚠️</span>
-                                <p><?php _e('Plik XML zamówień jeszcze nie został wygenerowany.', 'newsletter-ai'); ?></p>
-                            </div>
-                        <?php endif; ?>
-
-                        <div class="nai-text-center" style="margin-top: 20px;">
-                            <button type="button" id="nai-generate-orders-xml" class="nai-btn nai-btn-primary nai-btn-large">
-                                ⚡ <?php _e('Wygeneruj XML zamówień teraz', 'newsletter-ai'); ?>
-                            </button>
-                            <div id="nai-orders-xml-generation-status" style="margin-top: 10px;"></div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Statystyki ogólne -->
+                <!-- Kolumna prawa - ustawienia i informacje -->
+                <div>
+                    <!-- Jak działa filtrowanie -->
+                    <div class="nai-metabox">
+                        <div class="nai-metabox-header primary">
+                            <h3>🔍 <?php _e('Filtrowanie zamówień', 'newsletter-ai'); ?></h3>
+                        </div>
+                        <div class="nai-metabox-content">
+                            <p><?php _e('XML zamówień zawiera <strong>tylko</strong> zamówienia od klientów którzy wyrazili zgodę na newsletter:', 'newsletter-ai'); ?></p>
+
+                            <div class="nai-filter-examples">
+                                <div class="nai-filter-example">
+                                    <h4>✅ <?php _e('Uwzględniane zamówienia:', 'newsletter-ai'); ?></h4>
+                                    <ul>
+                                        <li>👤 <?php _e('Zarejestrowany użytkownik ze zgodą na newsletter', 'newsletter-ai'); ?></li>
+                                        <li>🔓 <?php _e('Gość który wyraził zgodę podczas zamówienia', 'newsletter-ai'); ?></li>
+                                    </ul>
+                                </div>
+
+                                <div class="nai-filter-example">
+                                    <h4>❌ <?php _e('Pomijane zamówienia:', 'newsletter-ai'); ?></h4>
+                                    <ul>
+                                        <li>👤 <?php _e('Zarejestrowany użytkownik bez zgody', 'newsletter-ai'); ?></li>
+                                        <li>🔓 <?php _e('Gość który nie wyraził zgody', 'newsletter-ai'); ?></li>
+                                        <li>📅 <?php _e('Stare zamówienia gości (przed implementacją)', 'newsletter-ai'); ?></li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div class="nai-notice nai-notice-info">
+                                <span>ℹ️</span>
+                                <p><strong><?php _e('GDPR Compliance:', 'newsletter-ai'); ?></strong><br>
+                                    <?php _e('Eksportujemy tylko dane klientów którzy świadomie wyrazili zgodę.', 'newsletter-ai'); ?></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Statusy zamówień -->
+                    <div class="nai-metabox">
+                        <div class="nai-metabox-header secondary">
+                            <h3>📋 <?php _e('Mapowanie statusów', 'newsletter-ai'); ?></h3>
+                        </div>
+                        <div class="nai-metabox-content">
+                            <p><?php _e('Statusy WooCommerce są mapowane do statusów Samba.AI:', 'newsletter-ai'); ?></p>
+
+                            <div class="nai-status-mapping">
+                                <div class="nai-status-group">
+                                    <strong>send</strong>
+                                    <div class="nai-status-items">
+                                        <span class="nai-status-badge nai-status-success">Ukończone</span>
+                                    </div>
+                                </div>
+
+                                <div class="nai-status-group">
+                                    <strong>canceled</strong>
+                                    <div class="nai-status-items">
+                                        <span class="nai-status-badge nai-status-error">Anulowane</span>
+                                        <span class="nai-status-badge nai-status-error">Zwrócone</span>
+                                        <span class="nai-status-badge nai-status-error">Nieudane</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Instrukcje -->
+            <div class="nai-metabox">
+                <div class="nai-metabox-header warning">
+                    <h3>📖 <?php _e('Jak działa eksport zamówień ze zgodami', 'newsletter-ai'); ?></h3>
+                </div>
+                <div class="nai-metabox-content">
+                    <ol>
+                        <li><?php _e('System sprawdza wszystkie zamówienia w dozwolonych statusach', 'newsletter-ai'); ?></li>
+                        <li><?php _e('Dla każdego zamówienia weryfikuje zgodę klienta na newsletter:', 'newsletter-ai'); ?>
+                            <ul style="margin-left: 20px; margin-top: 8px;">
+                                <li><?php _e('Zarejestrowany użytkownik: sprawdza pole w profilu użytkownika', 'newsletter-ai'); ?></li>
+                                <li><?php _e('Gość: sprawdza pole _newsletter_consent w meta zamówienia', 'newsletter-ai'); ?></li>
+                            </ul>
+                        </li>
+                        <li><?php _e('Eksportuje tylko zamówienia od klientów z ważną zgodą', 'newsletter-ai'); ?></li>
+                        <li><?php _e('Zapisuje statystyki: ile zamówień sprawdzono vs ile wyeksportowano', 'newsletter-ai'); ?></li>
+                        <li><?php _e('Plik XML jest kompatybilny z oryginalnym formatem Samba.AI', 'newsletter-ai'); ?></li>
+                    </ol>
+
+                    <div class="nai-notice nai-notice-info" style="margin-top: 20px;">
+                        <span>💡</span>
+                        <p><strong><?php _e('Wskazówka:', 'newsletter-ai'); ?></strong> <?php _e('Możesz automatyzować generowanie tego pliku przez Cron wraz z plikiem klientów.', 'newsletter-ai'); ?></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            jQuery(document).ready(function ($) {
+                // Obsługa generowania XML zamówień
+                $('#nai-generate-orders-xml').on('click', function (e) {
+                    e.preventDefault();
+
+                    var $button = $(this);
+                    var $status = $('#nai-orders-xml-generation-status');
+                    var originalText = $button.html();
+
+                    $button.prop('disabled', true).html('<div class="nai-spinner" style="display: inline-block; vertical-align: middle; margin-right: 5px;"></div> Generowanie XML zamówień...');
+                    $status.html('<div class="nai-notice nai-notice-info"><div class="nai-spinner"></div> Sprawdzanie zgód i generowanie pliku XML...</div>');
+
+                    $.post(newsletterAI.ajax_url, {
+                        action: 'nai_generate_orders_xml',
+                        nonce: newsletterAI.nonce
+                    })
+                            .done(function (response) {
+                                if (response && response.success) {
+                                    $status.html('<div class="nai-notice nai-notice-success">✅ ' + (response.data.message || 'XML zamówień wygenerowany pomyślnie') + '</div>');
+
+                                    // Pokaż dodatkowe statystyki jeśli dostępne
+                                    if (response.data.stats) {
+                                        var statsHtml = '<div style="margin-top: 10px; font-size: 13px;">';
+                                        statsHtml += '<strong>Szczegóły:</strong><br>';
+                                        statsHtml += '• Sprawdzono zamówień: ' + response.data.stats.total_checked + '<br>';
+                                        statsHtml += '• Wyeksportowano: ' + response.data.stats.processed + '<br>';
+                                        statsHtml += '• Pominięto (brak zgody): ' + response.data.stats.skipped;
+                                        statsHtml += '</div>';
+                                        $status.find('.nai-notice').append(statsHtml);
+                                    }
+
+                                    // Odśwież stronę po 4 sekundach żeby pokazać nowe statystyki
+                                    setTimeout(function () {
+                                        location.reload();
+                                    }, 4000);
+                                } else {
+                                    var errorMessage = (response && response.data) ? response.data : 'Wystąpił błąd podczas generowania XML zamówień.';
+                                    $status.html('<div class="nai-notice nai-notice-error">❌ ' + errorMessage + '</div>');
+                                }
+                            })
+                            .fail(function (xhr, status, error) {
+                                console.error('Newsletter AI Orders: AJAX failed', xhr, status, error);
+                                $status.html('<div class="nai-notice nai-notice-error">❌ Błąd połączenia: ' + error + '</div>');
+                            })
+                            .always(function () {
+                                $button.prop('disabled', false).html(originalText);
+                            });
+                });
+            });
+        </script>
+
+        <style>
+            .nai-filter-examples {
+                margin: 15px 0;
+            }
+
+            .nai-filter-example {
+                margin: 15px 0;
+                padding: 12px;
+                border-radius: 4px;
+                background: #f6f7f7;
+            }
+
+            .nai-filter-example h4 {
+                margin: 0 0 8px 0;
+                font-size: 14px;
+            }
+
+            .nai-filter-example ul {
+                margin: 8px 0 0 20px;
+                font-size: 13px;
+            }
+
+            .nai-filter-example li {
+                margin: 4px 0;
+            }
+
+            .nai-status-mapping {
+                font-size: 13px;
+            }
+
+            .nai-status-group {
+                margin: 12px 0;
+                padding: 10px;
+                background: #f8f9fa;
+                border-radius: 4px;
+            }
+
+            .nai-status-group strong {
+                display: block;
+                margin-bottom: 6px;
+                color: #1d2327;
+                font-family: monospace;
+                background: #fff;
+                padding: 4px 8px;
+                border-radius: 3px;
+                display: inline-block;
+            }
+
+            .nai-status-items {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 6px;
+                margin-top: 8px;
+            }
+
+            .nai-status-badge {
+                padding: 3px 8px;
+                border-radius: 12px;
+                font-size: 11px;
+                font-weight: 600;
+                background: #e7e8ea;
+                color: #2c3338;
+            }
+
+            .nai-status-badge.nai-status-success {
+                background: #d1ecf1;
+                color: #0c5460;
+            }
+
+            .nai-status-badge.nai-status-error {
+                background: #f8d7da;
+                color: #721c24;
+            }
+
+            .nai-quick-links a {
+                text-decoration: none !important;
+                display: block !important;
+                text-align: center;
+            }
+        </style>
+        <?php
+    }
+
+    /**
+     * Dodaj nową stronę do class-admin-pages.php
+     */
+    public function emails_page() {
+        $email_export = new Newsletter_AI_Email_Export();
+        $statistics = $email_export->get_email_statistics();
+
+        // Pobierz datę wdrożenia zgód
+        $implementation_date = get_option('nai_consent_implementation_date', '2024-01-01 00:00:00');
+        ?>
+        <div class="wrap nai-admin-page nai-emails-page">
+            <h1><?php _e('Newsletter AI - Eksport adresów email', 'newsletter-ai'); ?></h1>
+
+            <!-- Statystyki -->
+            <div class="nai-metabox">
+                <div class="nai-metabox-header primary">
+                    <h3>📊 <?php _e('Statystyki adresów email z zamówień', 'newsletter-ai'); ?></h3>
+                </div>
+                <div class="nai-metabox-content">
+                    <div class="nai-stats-grid">
+                        <div class="nai-stat-card">
+                            <div class="nai-stat-number"><?php echo esc_html($statistics['all_emails']); ?></div>
+                            <div class="nai-stat-label"><?php _e('Wszystkie unikalne emaile', 'newsletter-ai'); ?></div>
+                        </div>
+                        <div class="nai-stat-card nai-stat-valid">
+                            <div class="nai-stat-number"><?php echo esc_html($statistics['consent_emails']); ?></div>
+                            <div class="nai-stat-label"><?php _e('Ze zgodą na newsletter', 'newsletter-ai'); ?></div>
+                        </div>
+                        <div class="nai-stat-card nai-stat-warning">
+                            <div class="nai-stat-number"><?php echo esc_html($statistics['legacy_emails']); ?></div>
+                            <div class="nai-stat-label"><?php _e('Sprzed wdrożenia', 'newsletter-ai'); ?></div>
+                        </div>
+                        <div class="nai-stat-card nai-stat-error">
+                            <div class="nai-stat-number"><?php echo esc_html($statistics['without_consent']); ?></div>
+                            <div class="nai-stat-label"><?php _e('Bez zgody (nowe)', 'newsletter-ai'); ?></div>
+                        </div>
+                    </div>
+
+                    <div class="nai-notice nai-notice-info" style="margin-top: 20px;">
+                        <span>ℹ️</span>
+                        <p><strong><?php _e('Data wdrożenia systemu zgód:', 'newsletter-ai'); ?></strong> <?php echo esc_html($implementation_date); ?></p>
+                        <p><?php _e('Goście którzy złożyli zamówienia przed tą datą są kategoryzowani jako "sprzed wdrożenia".', 'newsletter-ai'); ?></p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="nai-grid nai-grid-3">
+                <!-- Wszystkie emaile -->
                 <div class="nai-metabox">
                     <div class="nai-metabox-header">
-                        <h3>📈 <?php _e('Statystyki zgód (użytkownicy)', 'newsletter-ai'); ?></h3>
+                        <h3>📧 <?php _e('Wszystkie emaile', 'newsletter-ai'); ?></h3>
                     </div>
                     <div class="nai-metabox-content">
-                        <div class="nai-stats-grid">
-                            <div class="nai-stat-card">
-                                <div class="nai-stat-number"><?php echo esc_html($consent_stats['total_users']); ?></div>
-                                <div class="nai-stat-label"><?php _e('Łącznie użytkowników', 'newsletter-ai'); ?></div>
-                            </div>
-                            <div class="nai-stat-card nai-stat-valid">
-                                <div class="nai-stat-number"><?php echo esc_html($consent_stats['users_with_consent']); ?></div>
-                                <div class="nai-stat-label"><?php _e('Z zgodą', 'newsletter-ai'); ?></div>
-                            </div>
-                            <div class="nai-stat-card">
-                                <div class="nai-stat-number"><?php echo esc_html($consent_stats['consent_percentage']); ?>%</div>
-                                <div class="nai-stat-label"><?php _e('Procent zgód', 'newsletter-ai'); ?></div>
-                            </div>
+                        <p><?php _e('Wszystkie unikalne adresy email z zamówień (bez duplikatów).', 'newsletter-ai'); ?></p>
+
+                        <div class="nai-export-options">
+                            <button type="button" class="nai-btn nai-btn-primary nai-export-csv" data-type="all" style="width: 100%; margin-bottom: 10px;">
+                                📥 <?php _e('Eksportuj CSV', 'newsletter-ai'); ?>
+                            </button>
+
+                            <button type="button" class="nai-btn nai-btn-secondary nai-show-text" data-type="all" style="width: 100%;">
+                                👁️ <?php _e('Pokaż jako tekst', 'newsletter-ai'); ?>
+                            </button>
+                        </div>
+
+                        <div class="nai-email-count">
+                            <small><?php echo esc_html($statistics['all_emails']); ?> <?php _e('unikalnych adresów', 'newsletter-ai'); ?></small>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Emaile ze zgodą -->
+                <div class="nai-metabox">
+                    <div class="nai-metabox-header success">
+                        <h3>✅ <?php _e('Ze zgodą na newsletter', 'newsletter-ai'); ?></h3>
+                    </div>
+                    <div class="nai-metabox-content">
+                        <p><?php _e('Klienci którzy wyrazili zgodę na newsletter (zarejestrowani + goście).', 'newsletter-ai'); ?></p>
+
+                        <div class="nai-export-options">
+                            <button type="button" class="nai-btn nai-btn-success nai-export-csv" data-type="consent" style="width: 100%; margin-bottom: 10px;">
+                                📥 <?php _e('Eksportuj CSV', 'newsletter-ai'); ?>
+                            </button>
+
+                            <button type="button" class="nai-btn nai-btn-secondary nai-show-text" data-type="consent" style="width: 100%;">
+                                👁️ <?php _e('Pokaż jako tekst', 'newsletter-ai'); ?>
+                            </button>
+                        </div>
+
+                        <div class="nai-email-count">
+                            <small><?php echo esc_html($statistics['consent_emails']); ?> <?php _e('adresów ze zgodą', 'newsletter-ai'); ?></small>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Emaile sprzed wdrożenia -->
+                <div class="nai-metabox">
+                    <div class="nai-metabox-header warning">
+                        <h3>📅 <?php _e('Sprzed wdrożenia', 'newsletter-ai'); ?></h3>
+                    </div>
+                    <div class="nai-metabox-content">
+                        <p><?php _e('Goście którzy zamówili przed wdrożeniem systemu zgód.', 'newsletter-ai'); ?></p>
+
+                        <div class="nai-export-options">
+                            <button type="button" class="nai-btn nai-btn-warning nai-export-csv" data-type="legacy" style="width: 100%; margin-bottom: 10px;">
+                                📥 <?php _e('Eksportuj CSV', 'newsletter-ai'); ?>
+                            </button>
+
+                            <button type="button" class="nai-btn nai-btn-secondary nai-show-text" data-type="legacy" style="width: 100%;">
+                                👁️ <?php _e('Pokaż jako tekst', 'newsletter-ai'); ?>
+                            </button>
+                        </div>
+
+                        <div class="nai-email-count">
+                            <small><?php echo esc_html($statistics['legacy_emails']); ?> <?php _e('adresów legacy', 'newsletter-ai'); ?></small>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Kolumna prawa - ustawienia i informacje -->
-            <div>
-                <!-- Jak działa filtrowanie -->
-                <div class="nai-metabox">
-                    <div class="nai-metabox-header primary">
-                        <h3>🔍 <?php _e('Filtrowanie zamówień', 'newsletter-ai'); ?></h3>
+            <!-- Ustawienia -->
+            <div class="nai-metabox">
+                <div class="nai-metabox-header">
+                    <h3>⚙️ <?php _e('Ustawienia eksportu', 'newsletter-ai'); ?></h3>
+                </div>
+                <div class="nai-metabox-content">
+                    <form method="post" action="">
+                        <?php wp_nonce_field('nai_email_export_settings', 'nai_email_export_nonce'); ?>
+
+                        <div class="nai-form-field">
+                            <label for="nai_consent_implementation_date"><?php _e('Data wdrożenia systemu zgód', 'newsletter-ai'); ?></label>
+                            <input type="datetime-local" 
+                                   id="nai_consent_implementation_date" 
+                                   name="nai_consent_implementation_date" 
+                                   value="<?php echo esc_attr(date('Y-m-d\TH:i', strtotime($implementation_date))); ?>" />
+                            <p class="description"><?php _e('Zamówienia gości przed tą datą będą kategoryzowane jako "sprzed wdrożenia"', 'newsletter-ai'); ?></p>
+                        </div>
+
+                        <button type="submit" name="nai_save_email_export_settings" class="nai-btn nai-btn-primary">
+                            💾 <?php _e('Zapisz ustawienia', 'newsletter-ai'); ?>
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Modal do wyświetlania tekstu -->
+            <div id="nai-emails-text-modal" class="nai-modal" style="display: none;">
+                <div class="nai-modal-content" style="max-width: 600px;">
+                    <div class="nai-modal-header">
+                        <h3 id="nai-modal-title"><?php _e('Adresy email', 'newsletter-ai'); ?></h3>
+                        <span class="nai-modal-close">&times;</span>
                     </div>
-                    <div class="nai-metabox-content">
-                        <p><?php _e('XML zamówień zawiera <strong>tylko</strong> zamówienia od klientów którzy wyrazili zgodę na newsletter:', 'newsletter-ai'); ?></p>
-                        
-                        <div class="nai-filter-examples">
-                            <div class="nai-filter-example">
-                                <h4>✅ <?php _e('Uwzględniane zamówienia:', 'newsletter-ai'); ?></h4>
-                                <ul>
-                                    <li>👤 <?php _e('Zarejestrowany użytkownik z zgodą na newsletter', 'newsletter-ai'); ?></li>
-                                    <li>🔓 <?php _e('Gość który wyraził zgodę podczas zamówienia', 'newsletter-ai'); ?></li>
-                                </ul>
-                            </div>
-                            
-                            <div class="nai-filter-example">
-                                <h4>❌ <?php _e('Pomijane zamówienia:', 'newsletter-ai'); ?></h4>
-                                <ul>
-                                    <li>👤 <?php _e('Zarejestrowany użytkownik bez zgody', 'newsletter-ai'); ?></li>
-                                    <li>🔓 <?php _e('Gość który nie wyraził zgody', 'newsletter-ai'); ?></li>
-                                    <li>📅 <?php _e('Stare zamówienia gości (przed implementacją)', 'newsletter-ai'); ?></li>
-                                </ul>
-                            </div>
+                    <div class="nai-modal-body">
+                        <div class="nai-email-actions" style="margin-bottom: 15px;">
+                            <button type="button" id="nai-copy-emails" class="nai-btn nai-btn-primary">
+                                📋 <?php _e('Kopiuj wszystkie', 'newsletter-ai'); ?>
+                            </button>
+                            <span id="nai-email-count-modal" style="margin-left: 15px; color: #646970;"></span>
                         </div>
-                        
-                        <div class="nai-notice nai-notice-info">
-                            <span>ℹ️</span>
-                            <p><strong><?php _e('GDPR Compliance:', 'newsletter-ai'); ?></strong><br>
-                            <?php _e('Eksportujemy tylko dane klientów którzy świadomie wyrazili zgodę.', 'newsletter-ai'); ?></p>
-                        </div>
+
+                        <textarea id="nai-emails-textarea" 
+                                  style="width: 100%; height: 400px; font-family: monospace; font-size: 12px; border: 1px solid #c3c4c7; padding: 10px;" 
+                                  readonly></textarea>
+
+                        <p class="description" style="margin-top: 10px;">
+                            <?php _e('Jeden email w każdym wierszu. Możesz skopiować i wkleić bezpośrednio do narzędzi mailingowych.', 'newsletter-ai'); ?>
+                        </p>
+                    </div>
+                    <div class="nai-modal-footer">
+                        <button type="button" class="nai-btn nai-btn-secondary nai-modal-close-btn">
+                            <?php _e('Zamknij', 'newsletter-ai'); ?>
+                        </button>
                     </div>
                 </div>
+            </div>
 
-                <!-- Statusy zamówień -->
-                <div class="nai-metabox">
-                    <div class="nai-metabox-header secondary">
-                        <h3>📋 <?php _e('Mapowanie statusów', 'newsletter-ai'); ?></h3>
-                    </div>
-                    <div class="nai-metabox-content">
-                        <p><?php _e('Statusy WooCommerce są mapowane do statusów Samba.AI:', 'newsletter-ai'); ?></p>
-                        
-                        <div class="nai-status-mapping">
-                            <div class="nai-status-group">
-                                <strong>send</strong>
-                                <div class="nai-status-items">
-                                    <span class="nai-status-badge nai-status-success">Ukończone</span>
-                                </div>
-                            </div>
-                            
-                            <div class="nai-status-group">
-                                <strong>canceled</strong>
-                                <div class="nai-status-items">
-                                    <span class="nai-status-badge nai-status-error">Anulowane</span>
-                                    <span class="nai-status-badge nai-status-error">Zwrócone</span>
-                                    <span class="nai-status-badge nai-status-error">Nieudane</span>
-                                </div>
-                            </div>
-                        </div>
+            <!-- Instrukcje -->
+            <div class="nai-metabox">
+                <div class="nai-metabox-header warning">
+                    <h3>📖 <?php _e('Jak używać eksportu emaili', 'newsletter-ai'); ?></h3>
+                </div>
+                <div class="nai-metabox-content">
+                    <ol>
+                        <li><strong><?php _e('Wszystkie emaile:', 'newsletter-ai'); ?></strong> <?php _e('Kompletna lista bez duplikatów - użyj ostrożnie ze względu na GDPR', 'newsletter-ai'); ?></li>
+                        <li><strong><?php _e('Ze zgodą na newsletter:', 'newsletter-ai'); ?></strong> <?php _e('Bezpieczne do użycia - klienci wyrazili zgodę', 'newsletter-ai'); ?></li>
+                        <li><strong><?php _e('Sprzed wdrożenia:', 'newsletter-ai'); ?></strong> <?php _e('Wymagają osobnej analizy prawnej - nie ma zapisanej zgody', 'newsletter-ai'); ?></li>
+                        <li><?php _e('Format CSV: jeden email w wierszu, bez nagłówków - gotowy do importu', 'newsletter-ai'); ?></li>
+                        <li><?php _e('Format tekstowy: do kopiowania bezpośrednio do narzędzi mailingowych', 'newsletter-ai'); ?></li>
+                    </ol>
+
+                    <div class="nai-notice nai-notice-warning" style="margin-top: 15px;">
+                        <span>⚠️</span>
+                        <p><strong><?php _e('UWAGA GDPR:', 'newsletter-ai'); ?></strong> <?php _e('Używaj tylko emaili z kategorii "Ze zgodą na newsletter" do wysyłek marketingowych. Dla pozostałych kategorii skonsultuj się z prawnikiem.', 'newsletter-ai'); ?></p>
                     </div>
                 </div>
-
             </div>
         </div>
 
-        <!-- Instrukcje -->
-        <div class="nai-metabox">
-            <div class="nai-metabox-header warning">
-                <h3>📖 <?php _e('Jak działa eksport zamówień z zgodami', 'newsletter-ai'); ?></h3>
-            </div>
-            <div class="nai-metabox-content">
-                <ol>
-                    <li><?php _e('System sprawdza wszystkie zamówienia w dozwolonych statusach', 'newsletter-ai'); ?></li>
-                    <li><?php _e('Dla każdego zamówienia weryfikuje zgodę klienta na newsletter:', 'newsletter-ai'); ?>
-                        <ul style="margin-left: 20px; margin-top: 8px;">
-                            <li><?php _e('Zarejestrowany użytkownik: sprawdza pole w profilu użytkownika', 'newsletter-ai'); ?></li>
-                            <li><?php _e('Gość: sprawdza pole _newsletter_consent w meta zamówienia', 'newsletter-ai'); ?></li>
-                        </ul>
-                    </li>
-                    <li><?php _e('Eksportuje tylko zamówienia od klientów z ważną zgodą', 'newsletter-ai'); ?></li>
-                    <li><?php _e('Zapisuje statystyki: ile zamówień sprawdzono vs ile wyeksportowano', 'newsletter-ai'); ?></li>
-                    <li><?php _e('Plik XML jest kompatybilny z oryginalnym formatem Samba.AI', 'newsletter-ai'); ?></li>
-                </ol>
-                
-                <div class="nai-notice nai-notice-info" style="margin-top: 20px;">
-                    <span>💡</span>
-                    <p><strong><?php _e('Wskazówka:', 'newsletter-ai'); ?></strong> <?php _e('Możesz automatyzować generowanie tego pliku przez Cron wraz z plikiem klientów.', 'newsletter-ai'); ?></p>
-                </div>
-            </div>
-        </div>
-    </div>
+        <script>
+            jQuery(document).ready(function ($) {
+                // Obsługa eksportu CSV
+                $('.nai-export-csv').on('click', function () {
+                    var $button = $(this);
+                    var type = $button.data('type');
+                    var originalText = $button.html();
 
-    <script>
-    jQuery(document).ready(function($) {
-        // Obsługa generowania XML zamówień
-        $('#nai-generate-orders-xml').on('click', function(e) {
-            e.preventDefault();
+                    $button.prop('disabled', true).html('📥 Generowanie...');
 
-            var $button = $(this);
-            var $status = $('#nai-orders-xml-generation-status');
-            var originalText = $button.html();
+                    $.ajax({
+                        url: newsletterAI.ajax_url,
+                        type: 'POST',
+                        data: {
+                            action: 'nai_export_emails_csv',
+                            nonce: newsletterAI.nonce,
+                            type: type
+                        },
+                        success: function (response) {
+                            if (response.success && response.data.url) {
+                                // Utwórz link do pobrania
+                                var link = document.createElement('a');
+                                link.href = response.data.url;
+                                link.download = response.data.filename || 'emails.csv';
+                                document.body.appendChild(link);
+                                link.click();
+                                document.body.removeChild(link);
 
-            $button.prop('disabled', true).html('<div class="nai-spinner" style="display: inline-block; vertical-align: middle; margin-right: 5px;"></div> Generowanie XML zamówień...');
-            $status.html('<div class="nai-notice nai-notice-info"><div class="nai-spinner"></div> Sprawdzanie zgód i generowanie pliku XML...</div>');
+                                alert('Plik CSV został wygenerowany i pobrany!\nLiczba emaili: ' + response.data.count);
+                            } else {
+                                alert('Błąd: ' + (response.data || 'Nie udało się wygenerować pliku'));
+                            }
+                        },
+                        error: function () {
+                            alert('Błąd połączenia podczas eksportu');
+                        },
+                        complete: function () {
+                            $button.prop('disabled', false).html(originalText);
+                        }
+                    });
+                });
 
-            $.post(newsletterAI.ajax_url, {
-                action: 'nai_generate_orders_xml',
-                nonce: newsletterAI.nonce
-            })
-            .done(function(response) {
-                if (response && response.success) {
-                    $status.html('<div class="nai-notice nai-notice-success">✅ ' + (response.data.message || 'XML zamówień wygenerowany pomyślnie') + '</div>');
-                    
-                    // Pokaż dodatkowe statystyki jeśli dostępne
-                    if (response.data.stats) {
-                        var statsHtml = '<div style="margin-top: 10px; font-size: 13px;">';
-                        statsHtml += '<strong>Szczegóły:</strong><br>';
-                        statsHtml += '• Sprawdzono zamówień: ' + response.data.stats.total_checked + '<br>';
-                        statsHtml += '• Wyeksportowano: ' + response.data.stats.processed + '<br>';
-                        statsHtml += '• Pominięto (brak zgody): ' + response.data.stats.skipped;
-                        statsHtml += '</div>';
-                        $status.find('.nai-notice').append(statsHtml);
+                // Obsługa pokazywania tekstu
+                $('.nai-show-text').on('click', function () {
+                    var $button = $(this);
+                    var type = $button.data('type');
+
+                    // Ustaw tytuł modala
+                    var titles = {
+                        'all': 'Wszystkie adresy email',
+                        'consent': 'Emaile ze zgodą na newsletter',
+                        'legacy': 'Emaile sprzed wdrożenia zgód'
+                    };
+                    $('#nai-modal-title').text(titles[type] || 'Adresy email');
+
+                    // Pokaż modal z ładowaniem
+                    $('#nai-emails-text-modal').show();
+                    $('#nai-emails-textarea').val('Ładowanie...');
+                    $('#nai-email-count-modal').text('');
+
+                    $.ajax({
+                        url: newsletterAI.ajax_url,
+                        type: 'POST',
+                        data: {
+                            action: 'nai_get_emails_text',
+                            nonce: newsletterAI.nonce,
+                            type: type
+                        },
+                        success: function (response) {
+                            if (response.success) {
+                                $('#nai-emails-textarea').val(response.data.text);
+                                $('#nai-email-count-modal').text(response.data.count + ' emaili');
+                            } else {
+                                $('#nai-emails-textarea').val('Błąd: ' + (response.data || 'Nie udało się pobrać emaili'));
+                            }
+                        },
+                        error: function () {
+                            $('#nai-emails-textarea').val('Błąd połączenia podczas pobierania emaili');
+                        }
+                    });
+                });
+
+                // Obsługa kopiowania do schowka
+                $('#nai-copy-emails').on('click', function () {
+                    var textarea = document.getElementById('nai-emails-textarea');
+                    textarea.select();
+                    textarea.setSelectionRange(0, 99999); // Dla urządzeń mobilnych
+
+                    try {
+                        document.execCommand('copy');
+                        alert('Adresy email zostały skopiowane do schowka!');
+                    } catch (err) {
+                        alert('Nie udało się skopiować. Zaznacz tekst ręcznie i skopiuj (Ctrl+C).');
                     }
-                    
-                    // Odśwież stronę po 4 sekundach żeby pokazać nowe statystyki
-                    setTimeout(function() {
-                        location.reload();
-                    }, 4000);
-                } else {
-                    var errorMessage = (response && response.data) ? response.data : 'Wystąpił błąd podczas generowania XML zamówień.';
-                    $status.html('<div class="nai-notice nai-notice-error">❌ ' + errorMessage + '</div>');
-                }
-            })
-            .fail(function(xhr, status, error) {
-                console.error('Newsletter AI Orders: AJAX failed', xhr, status, error);
-                $status.html('<div class="nai-notice nai-notice-error">❌ Błąd połączenia: ' + error + '</div>');
-            })
-            .always(function() {
-                $button.prop('disabled', false).html(originalText);
-            });
-        });
-    });
-    </script>
+                });
 
-    <style>
-    .nai-filter-examples {
-        margin: 15px 0;
+                // Obsługa zamykania modala
+                $('.nai-modal-close, .nai-modal-close-btn').on('click', function () {
+                    $('#nai-emails-text-modal').hide();
+                });
+
+                // Zamknij modal po kliknięciu w tło
+                $('#nai-emails-text-modal').on('click', function (e) {
+                    if (e.target === this) {
+                        $(this).hide();
+                    }
+                });
+            });
+        </script>
+
+        <style>
+            .nai-emails-page .nai-export-options {
+                margin: 15px 0;
+            }
+
+            .nai-email-count {
+                margin-top: 10px;
+                padding-top: 10px;
+                border-top: 1px solid #f0f0f1;
+                text-align: center;
+            }
+
+            .nai-email-actions {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                padding: 10px;
+                background: #f6f7f7;
+                border-radius: 4px;
+            }
+
+            #nai-emails-textarea {
+                font-family: 'Courier New', Consolas, monospace !important;
+                line-height: 1.4;
+                resize: vertical;
+            }
+
+            .nai-modal {
+                position: fixed;
+                z-index: 100000;
+                left: 0;
+                top: 0;
+                width: 100%;
+                height: 100%;
+                background-color: rgba(0,0,0,0.5);
+            }
+
+            .nai-modal-content {
+                background-color: #fff;
+                margin: 3% auto;
+                padding: 0;
+                border-radius: 6px;
+                width: 90%;
+                max-width: 800px;
+                max-height: 90vh;
+                overflow: hidden;
+                box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            }
+
+            .nai-modal-header {
+                background: #2271b1;
+                color: #fff;
+                padding: 15px 20px;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+
+            .nai-modal-header h3 {
+                margin: 0;
+                color: #fff;
+            }
+
+            .nai-modal-close {
+                color: #fff;
+                font-size: 24px;
+                font-weight: bold;
+                cursor: pointer;
+                line-height: 1;
+            }
+
+            .nai-modal-close:hover {
+                opacity: 0.8;
+            }
+
+            .nai-modal-body {
+                padding: 20px;
+                max-height: 70vh;
+                overflow-y: auto;
+            }
+
+            .nai-modal-footer {
+                background: #f6f7f7;
+                padding: 15px 20px;
+                text-align: right;
+                border-top: 1px solid #c3c4c7;
+            }
+
+            @media (max-width: 768px) {
+                .nai-modal-content {
+                    width: 95%;
+                    margin: 1% auto;
+                }
+
+                .nai-emails-page .nai-grid-3 {
+                    grid-template-columns: 1fr;
+                }
+
+                .nai-email-actions {
+                    flex-direction: column;
+                    gap: 10px;
+                }
+            }
+        </style>
+        <?php
+        // Obsługa zapisywania ustawień
+        if (isset($_POST['nai_save_email_export_settings']) && wp_verify_nonce($_POST['nai_email_export_nonce'], 'nai_email_export_settings')) {
+            $implementation_date = sanitize_text_field($_POST['nai_consent_implementation_date']);
+            $implementation_date = date('Y-m-d H:i:s', strtotime($implementation_date));
+
+            update_option('nai_consent_implementation_date', $implementation_date);
+
+            echo '<div class="notice notice-success is-dismissible"><p>Ustawienia zostały zapisane.</p></div>';
+            echo '<script>setTimeout(function(){ location.reload(); }, 1000);</script>';
+        }
     }
-    
-    .nai-filter-example {
-        margin: 15px 0;
-        padding: 12px;
-        border-radius: 4px;
-        background: #f6f7f7;
-    }
-    
-    .nai-filter-example h4 {
-        margin: 0 0 8px 0;
-        font-size: 14px;
-    }
-    
-    .nai-filter-example ul {
-        margin: 8px 0 0 20px;
-        font-size: 13px;
-    }
-    
-    .nai-filter-example li {
-        margin: 4px 0;
-    }
-    
-    .nai-status-mapping {
-        font-size: 13px;
-    }
-    
-    .nai-status-group {
-        margin: 12px 0;
-        padding: 10px;
-        background: #f8f9fa;
-        border-radius: 4px;
-    }
-    
-    .nai-status-group strong {
-        display: block;
-        margin-bottom: 6px;
-        color: #1d2327;
-        font-family: monospace;
-        background: #fff;
-        padding: 4px 8px;
-        border-radius: 3px;
-        display: inline-block;
-    }
-    
-    .nai-status-items {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 6px;
-        margin-top: 8px;
-    }
-    
-    .nai-status-badge {
-        padding: 3px 8px;
-        border-radius: 12px;
-        font-size: 11px;
-        font-weight: 600;
-        background: #e7e8ea;
-        color: #2c3338;
-    }
-    
-    .nai-status-badge.nai-status-success {
-        background: #d1ecf1;
-        color: #0c5460;
-    }
-    
-    .nai-status-badge.nai-status-error {
-        background: #f8d7da;
-        color: #721c24;
-    }
-    
-    .nai-quick-links a {
-        text-decoration: none !important;
-        display: block !important;
-        text-align: center;
-    }
-    </style>
-    <?php
-}
 
 }
