@@ -37,104 +37,134 @@ class Newsletter_AI_Orders_Generator {
      * Wygeneruj plik XML zamówień
      */
     public function generate_orders_xml_file($ajax_mode = true) {
-        if (!is_plugin_active('woocommerce/woocommerce.php')) {
-            if ($ajax_mode) {
-                wp_send_json_error(__('WooCommerce nie jest aktywne', 'newsletter-ai'));
-            }
-            return false;
-        }
-        
-        global $wpdb;
-        
-        $debug_mode = get_option('nai_debug_mode', false);
-        $consent_field = get_option('nai_consent_field', 'newsletter_ai_consent');
-        $consent_values = get_option('nai_consent_values', array('yes', '1', 'true', 'on'));
-        
-        if ($debug_mode) {
-            $this->log('Rozpoczynanie generowania XML zamówień z filtrowaniem zgód');
-        }
-        
-        // Przygotuj katalog
-        $export_dir = WP_CONTENT_DIR . '/sambaAiExport';
-        if (!file_exists($export_dir)) {
-            wp_mkdir_p($export_dir);
-        }
-        
-        $per_file = 100;
-        $loop = 0;
-        
-        // Pobierz wszystkie statusy zamówień do eksportu
-        $all_statuses = array();
-        foreach ($this->order_statuses as $status_group) {
-            if (is_array($status_group)) {
-                $all_statuses = array_merge($all_statuses, $status_group);
-            }
-        }
-        
-        // Policz łączną liczbę zamówień do przetworzenia
-        $total_orders = $this->count_orders_with_consent($all_statuses, $consent_field, $consent_values);
-        
-        if ($debug_mode) {
-            $this->log("Znaleziono $total_orders zamówień z zgodą na newsletter");
-        }
-        
-        // Rozpocznij plik XML
-        file_put_contents(WP_CONTENT_DIR . '/sambaAiExport/sambaAiOrders.xml', '<?xml version="1.0" encoding="utf-8"?><ORDERS>');
-        
-        $processed_orders = 0;
-        $skipped_orders = 0;
-        
-        // Przetwarzaj zamówienia w blokach
-        while ($loop * $per_file < $total_orders + ($per_file * 2)) { // Dodaj bufor na pomijane zamówienia
-            
-            $orders = $this->get_orders_batch($per_file, $loop * $per_file, $all_statuses);
-            
-            if (empty($orders)) {
-                break;
-            }
-            
-            $xml_content = $this->process_orders_batch($orders, $consent_field, $consent_values, $processed_orders, $skipped_orders);
-            
-            if (!empty($xml_content)) {
-                file_put_contents(WP_CONTENT_DIR . '/sambaAiExport/sambaAiOrders.xml', $xml_content, FILE_APPEND);
-            }
-            
-            wp_cache_flush();
-            $loop += 1;
-            
-            // Zabezpieczenie przed nieskończoną pętlą
-            if ($loop > 1000) {
-                break;
-            }
-        }
-        
-        // Zamknij plik XML
-        file_put_contents(WP_CONTENT_DIR . '/sambaAiExport/sambaAiOrders.xml', '</ORDERS>', FILE_APPEND);
-        
-        // Zapisz statystyki
-        $this->save_orders_generation_stats($processed_orders, $skipped_orders);
-        
-        if ($debug_mode) {
-            $this->log("XML zamówień wygenerowany. Przetworzono: $processed_orders, Pominięto: $skipped_orders");
-        }
-        
+    if (!is_plugin_active('woocommerce/woocommerce.php')) {
         if ($ajax_mode) {
-            wp_send_json_success(array(
-                'message' => sprintf(
-                    __('XML zamówień wygenerowany pomyślnie! Przetworzono: %d zamówień, pominięto: %d (brak zgody)', 'newsletter-ai'),
-                    $processed_orders,
-                    $skipped_orders
-                ),
-                'stats' => array(
-                    'processed' => $processed_orders,
-                    'skipped' => $skipped_orders,
-                    'total_checked' => $processed_orders + $skipped_orders
-                )
-            ));
+            wp_send_json_error(__('WooCommerce nie jest aktywne', 'newsletter-ai'));
+        }
+        return false;
+    }
+    
+    global $wpdb;
+    
+    $debug_mode = get_option('nai_debug_mode', false);
+    $consent_field = get_option('nai_consent_field', 'newsletter_ai_consent');
+    $consent_values = get_option('nai_consent_values', array('yes', '1', 'true', 'on'));
+    
+    if ($debug_mode) {
+        $this->log('Rozpoczynanie generowania XML zamówień z filtrowaniem zgód');
+    }
+    
+    // Przygotuj katalog
+    $export_dir = WP_CONTENT_DIR . '/sambaAiExport';
+    if (!file_exists($export_dir)) {
+        wp_mkdir_p($export_dir);
+    }
+    
+    $per_file = 100;
+    $loop = 0;
+    
+    // Pobierz wszystkie statusy zamówień do eksportu
+    $all_statuses = array();
+    foreach ($this->order_statuses as $status_group) {
+        if (is_array($status_group)) {
+            $all_statuses = array_merge($all_statuses, $status_group);
+        }
+    }
+    
+    // NAPRAWKA: Policz łączną liczbę zamówień w prawidłowych statusach
+    $total_orders = $this->count_total_orders($all_statuses);
+    
+    if ($debug_mode) {
+        $this->log("Łączna liczba zamówień do sprawdzenia: $total_orders");
+        $this->log('Sprawdzane statusy: ' . implode(', ', $all_statuses));
+    }
+    
+    // Rozpocznij plik XML
+    file_put_contents(WP_CONTENT_DIR . '/sambaAiExport/sambaAiOrders.xml', '<?xml version="1.0" encoding="utf-8"?><ORDERS>');
+    
+    $processed_orders = 0;
+    $skipped_orders = 0;
+    
+    // NAPRAWKA: Przetwarzaj ALL zamówienia w blokach
+    while ($loop * $per_file < $total_orders) {
+        
+        $orders = $this->get_orders_batch($per_file, $loop * $per_file, $all_statuses);
+        
+        if (empty($orders)) {
+            if ($debug_mode) {
+                $this->log("Koniec zamówień na pętli $loop (offset: " . ($loop * $per_file) . ")");
+            }
+            break;
         }
         
-        return true;
+        if ($debug_mode) {
+            $this->log("Pętla $loop: sprawdzanie " . count($orders) . " zamówień (offset: " . ($loop * $per_file) . ")");
+        }
+        
+        $xml_content = $this->process_orders_batch($orders, $consent_field, $consent_values, $processed_orders, $skipped_orders);
+        
+        if (!empty($xml_content)) {
+            file_put_contents(WP_CONTENT_DIR . '/sambaAiExport/sambaAiOrders.xml', $xml_content, FILE_APPEND);
+        }
+        
+        wp_cache_flush();
+        $loop += 1;
+        
+        // Zabezpieczenie przed nieskończoną pętlą
+        if ($loop > 500) { // 500 * 100 = 50,000 zamówień max
+            if ($debug_mode) {
+                $this->log("Przerwano na pętli 500 - zabezpieczenie przed nieskończoną pętlą");
+            }
+            break;
+        }
     }
+    
+    // Zamknij plik XML
+    file_put_contents(WP_CONTENT_DIR . '/sambaAiExport/sambaAiOrders.xml', '</ORDERS>', FILE_APPEND);
+    
+    // Zapisz statystyki
+    $this->save_orders_generation_stats($processed_orders, $skipped_orders);
+    
+    if ($debug_mode) {
+        $this->log("XML zamówień wygenerowany. Sprawdzono: " . ($processed_orders + $skipped_orders) . ", Przetworzono: $processed_orders, Pominięto: $skipped_orders");
+    }
+    
+    if ($ajax_mode) {
+        wp_send_json_success(array(
+            'message' => sprintf(
+                __('XML zamówień wygenerowany pomyślnie! Sprawdzono: %d, przetworzono: %d zamówień, pominięto: %d (brak zgody)', 'newsletter-ai'),
+                $processed_orders + $skipped_orders,
+                $processed_orders,
+                $skipped_orders
+            ),
+            'stats' => array(
+                'total_checked' => $processed_orders + $skipped_orders,
+                'processed' => $processed_orders,
+                'skipped' => $skipped_orders
+            )
+        ));
+    }
+    
+    return true;
+}
+
+/**
+ * DODAJ NOWĄ metodę do class-orders-generator.php
+ */
+private function count_total_orders($statuses) {
+    global $wpdb;
+    
+    $statuses_placeholders = implode(',', array_fill(0, count($statuses), '%s'));
+    
+    return (int) $wpdb->get_var($wpdb->prepare("
+        SELECT COUNT(*)
+        FROM {$wpdb->posts}
+        WHERE post_type = 'shop_order'
+        AND post_status IN ($statuses_placeholders)
+    ", $statuses));
+}
+
+
     
     /**
      * Policz zamówienia z zgodą na newsletter
@@ -188,24 +218,35 @@ class Newsletter_AI_Orders_Generator {
      * Przetwórz batch zamówień
      */
     private function process_orders_batch($orders, $consent_field, $consent_values, &$processed_orders, &$skipped_orders) {
-        $xml_content = '';
+    $xml_content = '';
+    $debug_mode = get_option('nai_debug_mode', false);
+    
+    foreach ($orders as $order) {
+        $order_id = $order->get_id();
         
-        foreach ($orders as $order) {
-            // Sprawdź zgodę klienta
-            if (!$this->order_has_newsletter_consent($order, $consent_field, $consent_values)) {
-                $skipped_orders++;
-                continue;
-            }
-            
-            $order_xml = $this->generate_order_xml($order);
-            if ($order_xml) {
-                $xml_content .= $order_xml;
-                $processed_orders++;
-            }
+        // Sprawdź zgodę klienta
+        $has_consent = $this->order_has_newsletter_consent($order, $consent_field, $consent_values);
+        
+        if ($debug_mode && ($processed_orders + $skipped_orders) % 50 == 0) {
+            // Log co 50 zamówień żeby nie spamować
+            $customer_type = $order->get_user_id() > 0 ? 'user' : 'guest';
+            $this->log("Zamówienie #$order_id ($customer_type): zgoda = " . ($has_consent ? 'TAK' : 'NIE'));
         }
         
-        return $xml_content;
+        if (!$has_consent) {
+            $skipped_orders++;
+            continue;
+        }
+        
+        $order_xml = $this->generate_order_xml($order);
+        if ($order_xml) {
+            $xml_content .= $order_xml;
+            $processed_orders++;
+        }
     }
+    
+    return $xml_content;
+}
     
     /**
      * Sprawdź czy zamówienie ma zgodę na newsletter
