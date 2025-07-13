@@ -108,37 +108,37 @@ class Newsletter_AI_Cron_Manager {
      * Wykonaj zadania cron
      */
     public function execute_cron_tasks() {
-        $start_time = microtime(true);
-        $this->log("=== CRON START ===");
-        
-        $results = array();
-        
-        try {
-            // 1. Generuj XML klientów
-            if (get_option('nai_cron_generate_customers', true)) {
-                $results['customers'] = $this->generate_customers_xml();
-            }
-            
-            // 2. Generuj XML zamówień (przyszłość)
-            if (get_option('nai_cron_generate_orders', false)) {
-                $results['orders'] = $this->generate_orders_xml();
-            }
-            
-            // 3. Generuj XML produktów (przyszłość)
-            if (get_option('nai_cron_generate_products', false)) {
-                $results['products'] = $this->generate_products_xml();
-            }
-            
-            // Zapisz wyniki ostatniego uruchomienia
-            $this->save_last_run_results($results, $start_time);
-            
-            $this->log("=== CRON SUCCESS === (" . round(microtime(true) - $start_time, 2) . "s)");
-            
-        } catch (Exception $e) {
-            $this->log("=== CRON ERROR === " . $e->getMessage());
-            $this->save_last_run_results(array('error' => $e->getMessage()), $start_time);
+    $start_time = microtime(true);
+    $this->log("=== CRON START ===");
+    
+    $results = array();
+    
+    try {
+        // 1. Generuj XML klientów
+        if (get_option('nai_cron_generate_customers', true)) {
+            $results['customers'] = $this->generate_customers_xml();
         }
+        
+        // 2. NOWE: Generuj XML zamówień
+        if (get_option('nai_cron_generate_orders', false)) {
+            $results['orders'] = $this->generate_orders_xml();
+        }
+        
+        // 3. Generuj XML produktów (przyszłość)
+        if (get_option('nai_cron_generate_products', false)) {
+            $results['products'] = $this->generate_products_xml();
+        }
+        
+        // Zapisz wyniki ostatniego uruchomienia
+        $this->save_last_run_results($results, $start_time);
+        
+        $this->log("=== CRON SUCCESS === (" . round(microtime(true) - $start_time, 2) . "s)");
+        
+    } catch (Exception $e) {
+        $this->log("=== CRON ERROR === " . $e->getMessage());
+        $this->save_last_run_results(array('error' => $e->getMessage()), $start_time);
     }
+}
     
     /**
      * Generuj XML klientów
@@ -166,22 +166,23 @@ class Newsletter_AI_Cron_Manager {
      * Generuj XML zamówień (placeholder)
      */
     private function generate_orders_xml() {
-        // TODO: Implementacja w przyszłości
-        $file_path = WP_CONTENT_DIR . '/sambaAiExport/sambaAiOrders.xml';
-        
-        $xml_content = '<?xml version="1.0" encoding="utf-8"?>' . PHP_EOL;
-        $xml_content .= '<ORDERS>' . PHP_EOL;
-        $xml_content .= '<!-- Placeholder - implementacja w przyszłości -->' . PHP_EOL;
-        $xml_content .= '</ORDERS>';
-        
-        file_put_contents($file_path, $xml_content);
-        
-        return array(
-            'status' => 'placeholder',
-            'message' => 'XML zamówień (placeholder)',
-            'file' => 'sambaAiOrders.xml'
-        );
+    if (!class_exists('Newsletter_AI_Orders_Generator')) {
+        throw new Exception('Klasa Newsletter_AI_Orders_Generator nie istnieje');
     }
+    
+    $generator = new Newsletter_AI_Orders_Generator();
+    $result = $generator->generate_orders_xml_file(false); // false = nie AJAX
+    
+    if (!$result) {
+        throw new Exception('Nie udało się wygenerować XML zamówień');
+    }
+    
+    return array(
+        'status' => 'success',
+        'message' => 'XML zamówień wygenerowany pomyślnie',
+        'file' => 'sambaAiOrders.xml'
+    );
+}
     
     /**
      * Generuj XML produktów (placeholder)

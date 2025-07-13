@@ -22,6 +22,7 @@ public $xml_generator;
 public $consent_manager;
 public $cron_manager; 
 public $dashboard_widget;
+public $orders_generator;
 public $customer_validator;
 public $user_profile;
 public $frontend_consent;
@@ -54,7 +55,8 @@ private function init() {
     $this->consent_manager = new Newsletter_AI_Consent_Manager();
     $this->cron_manager = new Newsletter_AI_Cron_Manager(); 
     $this->customer_validator = new Newsletter_AI_Customer_Validator();
-    $this->dashboard_widget = new Newsletter_AI_Dashboard_Widget();
+    $this->dashboard_widget = new Newsletter_AI_Dashboard_Widget();    
+    $this->orders_generator = new Newsletter_AI_Orders_Generator();
     $this->admin_pages = new Newsletter_AI_Admin_Pages();
     $this->user_profile = new Newsletter_AI_User_Profile();
     $this->frontend_consent = new Newsletter_AI_Frontend_Consent();
@@ -94,7 +96,11 @@ private function init() {
         add_action('wp_ajax_nai_update_user_consent', array($this->consent_manager, 'ajax_update_user_consent'));
         add_action('wp_ajax_nai_get_users_table', array($this->consent_manager, 'ajax_get_users_table'));
         add_action('wp_ajax_nai_export_csv', array($this->consent_manager, 'ajax_export_csv'));
-        
+        add_action('wp_ajax_nai_export_guests_csv', array($this->frontend_consent, 'ajax_export_guests_csv'));
+        add_action('wp_ajax_nai_generate_xml', array($this->xml_generator, 'ajax_generate_xml'));
+        add_action('wp_ajax_nai_generate_orders_xml', array($this->orders_generator, 'ajax_generate_orders_xml')); // NOWE
+    
+           
         // Debug - sprawdź czy klasy istnieją
         if (!$this->xml_generator) {
             error_log('Newsletter AI: xml_generator nie istnieje');

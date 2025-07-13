@@ -35,11 +35,11 @@ class Newsletter_AI_Activator {
         add_option('nai_original_xml_url', '');
         add_option('nai_debug_mode', false);
         
-        // DODAJ OPCJE CRON:
+        // Opcje cron
         add_option('nai_cron_enabled', true);
         add_option('nai_cron_time', '01:10');
         add_option('nai_cron_generate_customers', true);
-        add_option('nai_cron_generate_orders', false);
+        add_option('nai_cron_generate_orders', true);        
         add_option('nai_cron_generate_products', false);
         
         // Utwórz katalog eksportu
@@ -48,8 +48,7 @@ class Newsletter_AI_Activator {
             wp_mkdir_p($export_dir);
         }
         
-        // USUŃ STARY CRON I DODAJ NOWY HOOK:
-        // Wyczyść stary cron (jeśli istniał)
+        // Wyczyść stary cron
         wp_clear_scheduled_hook('nai_daily_xml_generation');
         wp_clear_scheduled_hook('nai_regenerate_xml');
     }
@@ -80,6 +79,7 @@ function newsletter_ai_load_classes() {
         'class-cron-manager.php',  
         'class-customer-validator.php',
         'class-dashboard-widget.php',
+        'class-orders-generator.php',
         'class-admin-pages.php',
         'class-user-profile.php',
         'class-frontend-consent.php'
