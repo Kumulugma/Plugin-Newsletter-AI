@@ -221,68 +221,76 @@ class Newsletter_AI_XML_Generator {
      * Przygotuj dane klienta
      */
     private function prepare_customer_data($temp_user) {
-        $data = array();
-        
-        if (isset($temp_user['ID']) && $temp_user['ID'] != '') {
-            // Zarejestrowany użytkownik
-            $data['id'] = $temp_user['ID'];
-            $data['email'] = $temp_user['meta']['billing_email'] !== '' ? $temp_user['meta']['billing_email'] : $temp_user['user_email'];
-            $data['registration_date'] = date(DATE_RFC3339_EXTENDED, strtotime($temp_user['user_registered']));
-            $data['first_name'] = isset($temp_user['meta']['billing_first_name']) && $temp_user['meta']['billing_first_name'] !== '' 
-                                ? $temp_user['meta']['billing_first_name'] 
-                                : (isset($temp_user['meta']['first_name']) ? $temp_user['meta']['first_name'] : '');
-            $data['last_name'] = isset($temp_user['meta']['billing_last_name']) && $temp_user['meta']['billing_last_name'] !== '' 
-                               ? $temp_user['meta']['billing_last_name'] 
-                               : (isset($temp_user['meta']['last_name']) ? $temp_user['meta']['last_name'] : '');
-            $data['phone'] = isset($temp_user['meta']['billing_phone']) ? $temp_user['meta']['billing_phone'] : '';
-        } else {
-            // Niezarejestrowany użytkownik
-            $data['id'] = '';
-            $data['email'] = $temp_user['meta']['billing_email'];
-            $data['registration_date'] = '';
-            $data['first_name'] = isset($temp_user['meta']['billing_first_name']) ? $temp_user['meta']['billing_first_name'] : '';
-            $data['last_name'] = isset($temp_user['meta']['billing_last_name']) ? $temp_user['meta']['billing_last_name'] : '';
-            $data['phone'] = isset($temp_user['meta']['billing_phone']) ? $temp_user['meta']['billing_phone'] : '';
-        }
-        
-        return $data;
+    $data = array();
+    
+    if (isset($temp_user['ID']) && $temp_user['ID'] != '') {
+        // Zarejestrowany użytkownik
+        $data['id'] = $temp_user['ID'];
+        $data['email'] = $temp_user['meta']['billing_email'] !== '' ? $temp_user['meta']['billing_email'] : $temp_user['user_email'];
+        $data['registration_date'] = date(DATE_RFC3339_EXTENDED, strtotime($temp_user['user_registered']));
+        $data['first_name'] = isset($temp_user['meta']['billing_first_name']) && $temp_user['meta']['billing_first_name'] !== '' 
+                            ? $temp_user['meta']['billing_first_name'] 
+                            : (isset($temp_user['meta']['first_name']) ? $temp_user['meta']['first_name'] : '');
+        $data['last_name'] = isset($temp_user['meta']['billing_last_name']) && $temp_user['meta']['billing_last_name'] !== '' 
+                           ? $temp_user['meta']['billing_last_name'] 
+                           : (isset($temp_user['meta']['last_name']) ? $temp_user['meta']['last_name'] : '');
+        $data['phone'] = isset($temp_user['meta']['billing_phone']) ? $temp_user['meta']['billing_phone'] : '';
+        // DODAJ TO:
+        $data['zip_code'] = isset($temp_user['meta']['billing_postcode']) ? $temp_user['meta']['billing_postcode'] : '';
+    } else {
+        // Niezarejestrowany użytkownik
+        $data['id'] = '';
+        $data['email'] = $temp_user['meta']['billing_email'];
+        $data['registration_date'] = '';
+        $data['first_name'] = isset($temp_user['meta']['billing_first_name']) ? $temp_user['meta']['billing_first_name'] : '';
+        $data['last_name'] = isset($temp_user['meta']['billing_last_name']) ? $temp_user['meta']['billing_last_name'] : '';
+        $data['phone'] = isset($temp_user['meta']['billing_phone']) ? $temp_user['meta']['billing_phone'] : '';
+        // DODAJ TO:
+        $data['zip_code'] = isset($temp_user['meta']['billing_postcode']) ? $temp_user['meta']['billing_postcode'] : '';
     }
+    
+    return $data;
+}
     
     /**
      * Zbuduj XML dla pojedynczego klienta
      */
     private function build_customer_xml($customer_data, $newsletter_frequency, $sms_frequency) {
-        $xml = '<CUSTOMER>';
-        
-        if ($customer_data['id'] != '') {
-            $xml .= '<CUSTOMER_ID>' . esc_xml($customer_data['id']) . '</CUSTOMER_ID>';
-        }
-        
-        $xml .= '<EMAIL>' . esc_xml($customer_data['email']) . '</EMAIL>';
-        
-        if ($customer_data['registration_date'] != '') {
-            $xml .= '<REGISTRATION>' . esc_xml($customer_data['registration_date']) . '</REGISTRATION>';
-        }
-        
-        $xml .= '<NEWSLETTER_FREQUENCY>' . esc_xml($newsletter_frequency) . '</NEWSLETTER_FREQUENCY>';
-        
-        if ($customer_data['first_name'] != '') {
-            $xml .= '<FIRST_NAME>' . esc_xml($customer_data['first_name']) . '</FIRST_NAME>';
-        }
-        
-        if ($customer_data['last_name'] != '') {
-            $xml .= '<LAST_NAME>' . esc_xml($customer_data['last_name']) . '</LAST_NAME>';
-        }
-        
-        if ($customer_data['phone'] != '') {
-            $xml .= '<PHONE>' . esc_xml($customer_data['phone']) . '</PHONE>';
-        }
-        
-        $xml .= '<SMS_FREQUENCY>' . esc_xml($sms_frequency) . '</SMS_FREQUENCY>';
-        $xml .= '</CUSTOMER>' . PHP_EOL;
-        
-        return $xml;
+    $xml = '<CUSTOMER>';
+    
+    if ($customer_data['id'] != '') {
+        $xml .= '<CUSTOMER_ID>' . esc_xml($customer_data['id']) . '</CUSTOMER_ID>';
     }
+    
+    $xml .= '<EMAIL>' . esc_xml($customer_data['email']) . '</EMAIL>';
+    
+    if ($customer_data['registration_date'] != '') {
+        $xml .= '<REGISTRATION>' . esc_xml($customer_data['registration_date']) . '</REGISTRATION>';
+    }
+    
+    $xml .= '<NEWSLETTER_FREQUENCY>' . esc_xml($newsletter_frequency) . '</NEWSLETTER_FREQUENCY>';
+    
+    if ($customer_data['first_name'] != '') {
+        $xml .= '<FIRST_NAME>' . esc_xml($customer_data['first_name']) . '</FIRST_NAME>';
+    }
+    
+    if ($customer_data['last_name'] != '') {
+        $xml .= '<LAST_NAME>' . esc_xml($customer_data['last_name']) . '</LAST_NAME>';
+    }
+    
+    if ($customer_data['phone'] != '') {
+        $xml .= '<PHONE>' . esc_xml($customer_data['phone']) . '</PHONE>';
+    }
+    
+    if ($customer_data['zip_code'] != '') {
+        $xml .= '<ZIP_CODE>' . esc_xml($customer_data['zip_code']) . '</ZIP_CODE>';
+    }
+    
+    $xml .= '<SMS_FREQUENCY>' . esc_xml($sms_frequency) . '</SMS_FREQUENCY>';
+    $xml .= '</CUSTOMER>' . PHP_EOL;
+    
+    return $xml;
+}
     
     /**
      * Sprawdź zgodę użytkownika na newsletter

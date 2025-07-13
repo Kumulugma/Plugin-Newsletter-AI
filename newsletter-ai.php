@@ -35,23 +35,33 @@ class Newsletter_AI_Activator {
         add_option('nai_original_xml_url', '');
         add_option('nai_debug_mode', false);
         
+        // DODAJ OPCJE CRON:
+        add_option('nai_cron_enabled', true);
+        add_option('nai_cron_time', '01:10');
+        add_option('nai_cron_generate_customers', true);
+        add_option('nai_cron_generate_orders', false);
+        add_option('nai_cron_generate_products', false);
+        
         // Utwórz katalog eksportu
         $export_dir = WP_CONTENT_DIR . '/sambaAiExport';
         if (!file_exists($export_dir)) {
             wp_mkdir_p($export_dir);
         }
         
-        // Zaplanuj cron job
-        if (!wp_next_scheduled('nai_daily_xml_generation')) {
-            wp_schedule_event(time(), 'daily', 'nai_daily_xml_generation');
-        }
+        // USUŃ STARY CRON I DODAJ NOWY HOOK:
+        // Wyczyść stary cron (jeśli istniał)
+        wp_clear_scheduled_hook('nai_daily_xml_generation');
+        wp_clear_scheduled_hook('nai_regenerate_xml');
     }
     
     /**
      * Deaktywacja wtyczki
      */
     public static function deactivate() {
-        // Usuń zaplanowane zadania
+        // DODAJ CLEANUP NOWEGO CRON:
+        wp_clear_scheduled_hook('newsletter_ai_cron_hook');
+        
+        // Usuń stare zaplanowane zadania
         wp_clear_scheduled_hook('nai_daily_xml_generation');
         wp_clear_scheduled_hook('nai_regenerate_xml');
     }
@@ -67,6 +77,9 @@ function newsletter_ai_load_classes() {
         'class-newsletter-ai.php',
         'class-xml-generator.php', 
         'class-consent-manager.php',
+        'class-cron-manager.php',  
+        'class-customer-validator.php',
+        'class-dashboard-widget.php',
         'class-admin-pages.php',
         'class-user-profile.php',
         'class-frontend-consent.php'
@@ -77,7 +90,6 @@ function newsletter_ai_load_classes() {
         if (file_exists($file_path)) {
             require_once $file_path;
         } else {
-            // Debug - sprawdź które pliki nie istnieją
             error_log('Newsletter AI: Nie można znaleźć pliku: ' . $file_path);
         }
     }
@@ -110,19 +122,4 @@ register_deactivation_hook(__FILE__, array('Newsletter_AI_Activator', 'deactivat
 // Uruchom wtyczkę po załadowaniu wszystkich wtyczek
 add_action('plugins_loaded', 'run_newsletter_ai');
 
-// Hook dla cron job
-add_action('nai_daily_xml_generation', function() {
-    if (class_exists('Newsletter_AI_XML_Generator')) {
-        $generator = new Newsletter_AI_XML_Generator();
-        $generator->generate_xml_file(false);
-    }
-});
-
-// Hook dla pojedynczej regeneracji
-add_action('nai_regenerate_xml', function() {
-    if (class_exists('Newsletter_AI_XML_Generator')) {
-        $generator = new Newsletter_AI_XML_Generator();
-        $generator->generate_xml_file(false);
-    }
-});
 ?>

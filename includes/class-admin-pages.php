@@ -34,8 +34,8 @@ class Newsletter_AI_Admin_Pages {
         // Zakładka ustawień XML
         add_submenu_page(
                 'newsletter-ai',
-                __('Ustawienia XML', 'newsletter-ai'),
-                __('Ustawienia XML', 'newsletter-ai'),
+                __('XML - Klienci', 'newsletter-ai'), // ZMIENIONE Z: 'Ustawienia XML'
+                __('XML - Klienci', 'newsletter-ai'), // ZMIENIONE Z: 'Ustawienia XML'
                 'manage_options',
                 'newsletter-ai',
                 array($this, 'main_page')
@@ -60,46 +60,66 @@ class Newsletter_AI_Admin_Pages {
                 'newsletter-ai-frontend',
                 array($this, 'frontend_page')
         );
+
+        // Zakładka test klientów
+        add_submenu_page(
+                'newsletter-ai',
+                __('Test - Klienci', 'newsletter-ai'),
+                __('Test - Klienci', 'newsletter-ai'),
+                'manage_options',
+                'newsletter-ai-test',
+                array($this, 'test_page')
+        );
+
+        // Zakładka cron
+        add_submenu_page(
+                'newsletter-ai',
+                __('Ustawienia Cron', 'newsletter-ai'),
+                __('Ustawienia Cron', 'newsletter-ai'),
+                'manage_options',
+                'newsletter-ai-cron',
+                array($this, 'cron_page')
+        );
     }
 
     /**
      * Obsługa formularzy
      */
     public function handle_form_submissions() {
-    if (!current_user_can('manage_options')) {
-        return;
-    }
-    
-    // Debug dla eksportu
-    if (isset($_GET['action']) && $_GET['action'] === 'export_users') {
-        error_log('Newsletter AI: Export CSV triggered');
-        error_log('Newsletter AI: GET params: ' . print_r($_GET, true));
-        
-        if (!isset($_GET['nonce'])) {
-            error_log('Newsletter AI: Export - brak nonce');
-            wp_die('Błąd: brak nonce');
+        if (!current_user_can('manage_options')) {
+            return;
         }
-        
-        if (!wp_verify_nonce($_GET['nonce'], 'export_users')) {
-            error_log('Newsletter AI: Export - nieprawidłowy nonce');
-            wp_die('Błąd bezpieczeństwa: nieprawidłowy nonce');
+
+        // Debug dla eksportu
+        if (isset($_GET['action']) && $_GET['action'] === 'export_users') {
+            error_log('Newsletter AI: Export CSV triggered');
+            error_log('Newsletter AI: GET params: ' . print_r($_GET, true));
+
+            if (!isset($_GET['nonce'])) {
+                error_log('Newsletter AI: Export - brak nonce');
+                wp_die('Błąd: brak nonce');
+            }
+
+            if (!wp_verify_nonce($_GET['nonce'], 'export_users')) {
+                error_log('Newsletter AI: Export - nieprawidłowy nonce');
+                wp_die('Błąd bezpieczeństwa: nieprawidłowy nonce');
+            }
+
+            error_log('Newsletter AI: Export - nonce OK, uruchamianie eksportu');
+            $this->handle_export_users();
+            return; // Ważne - zatrzymaj dalsze przetwarzanie
         }
-        
-        error_log('Newsletter AI: Export - nonce OK, uruchamianie eksportu');
-        $this->handle_export_users();
-        return; // Ważne - zatrzymaj dalsze przetwarzanie
+
+        // Obsługa zapisu ustawień XML
+        if (isset($_POST['nai_save_xml_settings']) && wp_verify_nonce($_POST['nai_xml_nonce'], 'nai_xml_settings')) {
+            $this->save_xml_settings();
+        }
+
+        // Obsługa zapisu ustawień frontend
+        if (isset($_POST['nai_save_frontend_settings']) && wp_verify_nonce($_POST['nai_frontend_nonce'], 'nai_frontend_settings')) {
+            $this->save_frontend_settings();
+        }
     }
-    
-    // Obsługa zapisu ustawień XML
-    if (isset($_POST['nai_save_xml_settings']) && wp_verify_nonce($_POST['nai_xml_nonce'], 'nai_xml_settings')) {
-        $this->save_xml_settings();
-    }
-    
-    // Obsługa zapisu ustawień frontend
-    if (isset($_POST['nai_save_frontend_settings']) && wp_verify_nonce($_POST['nai_frontend_nonce'], 'nai_frontend_settings')) {
-        $this->save_frontend_settings();
-    }
-}
 
     /**
      * Zapisz ustawienia XML
@@ -151,74 +171,73 @@ class Newsletter_AI_Admin_Pages {
      * Obsługa eksportu użytkowników
      */
     private function handle_export_users() {
-    error_log('Newsletter AI: handle_export_users() started');
-    
-    try {
-        // Sprawdź czy klasa istnieje
-        if (!class_exists('Newsletter_AI_Consent_Manager')) {
-            error_log('Newsletter AI: Klasa Newsletter_AI_Consent_Manager nie istnieje');
-            wp_die('Błąd: Klasa Newsletter_AI_Consent_Manager nie została załadowana');
-        }
-        
-        $consent_manager = new Newsletter_AI_Consent_Manager();
-        error_log('Newsletter AI: Consent manager utworzony');
-        
-        // Sprawdź czy metoda eksportu istnieje
-        if (!method_exists($consent_manager, 'export_users_to_csv')) {
-            error_log('Newsletter AI: Metoda export_users_to_csv nie istnieje');
-            wp_die('Błąd: Metoda export_users_to_csv nie została znaleziona');
-        }
-        
-        $export_data = $consent_manager->export_users_to_csv();
-        error_log('Newsletter AI: Export data: ' . print_r($export_data, true));
-        
-        if (!$export_data || !isset($export_data['url'])) {
-            error_log('Newsletter AI: Eksport zwrócił nieprawidłowe dane');
-            wp_die('Błąd: Nie udało się wygenerować pliku CSV');
-        }
-        
-        // Sprawdź czy plik istnieje
-        if (isset($export_data['path']) && !file_exists($export_data['path'])) {
-            error_log('Newsletter AI: Plik CSV nie istnieje: ' . $export_data['path']);
-            wp_die('Błąd: Plik CSV nie został utworzony');
-        }
-        
-        error_log('Newsletter AI: Przekierowanie do: ' . $export_data['url']);
-        
-        // Wymuś pobranie pliku
-        if (isset($export_data['path']) && file_exists($export_data['path'])) {
-            $filename = basename($export_data['path']);
-            
-            // Wyczyść bufory
-            if (ob_get_level()) {
-                ob_end_clean();
+        error_log('Newsletter AI: handle_export_users() started');
+
+        try {
+            // Sprawdź czy klasa istnieje
+            if (!class_exists('Newsletter_AI_Consent_Manager')) {
+                error_log('Newsletter AI: Klasa Newsletter_AI_Consent_Manager nie istnieje');
+                wp_die('Błąd: Klasa Newsletter_AI_Consent_Manager nie została załadowana');
             }
-            
-            // Ustaw nagłówki
-            header('Content-Type: text/csv; charset=utf-8');
-            header('Content-Disposition: attachment; filename="' . $filename . '"');
-            header('Content-Length: ' . filesize($export_data['path']));
-            header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
-            header('Pragma: public');
-            
-            // Wyślij plik
-            readfile($export_data['path']);
-            
-            // Usuń tymczasowy plik (opcjonalnie)
-            // unlink($export_data['path']);
-            
-            exit;
-        } else {
-            // Fallback - przekieruj do URL
-            wp_redirect($export_data['url']);
-            exit;
+
+            $consent_manager = new Newsletter_AI_Consent_Manager();
+            error_log('Newsletter AI: Consent manager utworzony');
+
+            // Sprawdź czy metoda eksportu istnieje
+            if (!method_exists($consent_manager, 'export_users_to_csv')) {
+                error_log('Newsletter AI: Metoda export_users_to_csv nie istnieje');
+                wp_die('Błąd: Metoda export_users_to_csv nie została znaleziona');
+            }
+
+            $export_data = $consent_manager->export_users_to_csv();
+            error_log('Newsletter AI: Export data: ' . print_r($export_data, true));
+
+            if (!$export_data || !isset($export_data['url'])) {
+                error_log('Newsletter AI: Eksport zwrócił nieprawidłowe dane');
+                wp_die('Błąd: Nie udało się wygenerować pliku CSV');
+            }
+
+            // Sprawdź czy plik istnieje
+            if (isset($export_data['path']) && !file_exists($export_data['path'])) {
+                error_log('Newsletter AI: Plik CSV nie istnieje: ' . $export_data['path']);
+                wp_die('Błąd: Plik CSV nie został utworzony');
+            }
+
+            error_log('Newsletter AI: Przekierowanie do: ' . $export_data['url']);
+
+            // Wymuś pobranie pliku
+            if (isset($export_data['path']) && file_exists($export_data['path'])) {
+                $filename = basename($export_data['path']);
+
+                // Wyczyść bufory
+                if (ob_get_level()) {
+                    ob_end_clean();
+                }
+
+                // Ustaw nagłówki
+                header('Content-Type: text/csv; charset=utf-8');
+                header('Content-Disposition: attachment; filename="' . $filename . '"');
+                header('Content-Length: ' . filesize($export_data['path']));
+                header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
+                header('Pragma: public');
+
+                // Wyślij plik
+                readfile($export_data['path']);
+
+                // Usuń tymczasowy plik (opcjonalnie)
+                // unlink($export_data['path']);
+
+                exit;
+            } else {
+                // Fallback - przekieruj do URL
+                wp_redirect($export_data['url']);
+                exit;
+            }
+        } catch (Exception $e) {
+            error_log('Newsletter AI: Błąd eksportu: ' . $e->getMessage());
+            wp_die('Błąd podczas eksportu: ' . $e->getMessage());
         }
-        
-    } catch (Exception $e) {
-        error_log('Newsletter AI: Błąd eksportu: ' . $e->getMessage());
-        wp_die('Błąd podczas eksportu: ' . $e->getMessage());
     }
-}
 
     /**
      * Główna strona (ustawienia XML)
@@ -233,7 +252,7 @@ class Newsletter_AI_Admin_Pages {
         $consent_fields = $consent_manager->find_existing_consent_fields();
         ?>
         <div class="wrap nai-admin-page">
-            <h1><?php _e('Newsletter AI - Ustawienia XML', 'newsletter-ai'); ?></h1>
+            <h1><?php _e('Newsletter AI - XML - Klienci', 'newsletter-ai'); ?></h1>
 
             <?php settings_errors('nai_settings'); ?>
 
@@ -522,77 +541,77 @@ class Newsletter_AI_Admin_Pages {
                             </div>
 
                             <div class="nai-form-field">
-    <!-- Istniejący link z debugowaniem -->
-    <?php 
-    $export_url = wp_nonce_url(
-        admin_url('admin.php?page=newsletter-ai-users&action=export_users'), 
-        'export_users'
-    );
-    ?>
-    
-    <!-- Alternatywny przycisk przez AJAX -->
-    <button type="button" 
-            id="nai-export-csv-ajax" 
-            class="nai-btn nai-btn-secondary" 
-            style="width: 100%; margin-top: 5px;">
-        📥 <?php _e('Eksportuj CSV (AJAX)', 'newsletter-ai'); ?>
-    </button>
-    
-    <p class="description">
-        <?php _e('Pobierz plik CSV ze wszystkimi danymi.', 'newsletter-ai'); ?>
-        <br><small>URL: <code><?php echo esc_html($export_url); ?></code></small>
-    </p>
-</div>
+                                <!-- Istniejący link z debugowaniem -->
+                                <?php
+                                $export_url = wp_nonce_url(
+                                        admin_url('admin.php?page=newsletter-ai-users&action=export_users'),
+                                        'export_users'
+                                );
+                                ?>
 
-<script>
-jQuery(document).ready(function($) {
-    // Obsługa alternatywnego eksportu przez AJAX
-    $('#nai-export-csv-ajax').on('click', function(e) {
-        e.preventDefault();
-        
-        var $button = $(this);
-        var originalText = $button.html();
-        
-        console.log('Newsletter AI: Rozpoczynanie eksportu CSV przez AJAX');
-        
-        $button.prop('disabled', true).html('📥 Generowanie...');
-        
-        $.ajax({
-            url: newsletterAI.ajax_url,
-            type: 'POST',
-            data: {
-                action: 'nai_export_csv',
-                nonce: newsletterAI.nonce
-            },
-            timeout: 60000, // 60 sekund
-            success: function(response) {
-                console.log('Newsletter AI: Export response:', response);
-                
-                if (response.success && response.data.url) {
-                    // Utwórz tymczasowy link do pobrania
-                    var link = document.createElement('a');
-                    link.href = response.data.url;
-                    link.download = response.data.filename || 'newsletter_export.csv';
-                    document.body.appendChild(link);
-                    link.click();
-                    document.body.removeChild(link);
-                    
-                    alert('Plik CSV został wygenerowany i pobrany!');
-                } else {
-                    alert('Błąd: ' + (response.data || 'Nie udało się wygenerować pliku'));
-                }
-            },
-            error: function(xhr, status, error) {
-                console.error('Newsletter AI: AJAX error:', xhr, status, error);
-                alert('Błąd połączenia podczas eksportu: ' + error);
-            },
-            complete: function() {
-                $button.prop('disabled', false).html(originalText);
-            }
-        });
-    });
-});
-</script>
+                                <!-- Alternatywny przycisk przez AJAX -->
+                                <button type="button" 
+                                        id="nai-export-csv-ajax" 
+                                        class="nai-btn nai-btn-secondary" 
+                                        style="width: 100%; margin-top: 5px;">
+                                    📥 <?php _e('Eksportuj CSV (AJAX)', 'newsletter-ai'); ?>
+                                </button>
+
+                                <p class="description">
+                                    <?php _e('Pobierz plik CSV ze wszystkimi danymi.', 'newsletter-ai'); ?>
+                                    <br><small>URL: <code><?php echo esc_html($export_url); ?></code></small>
+                                </p>
+                            </div>
+
+                            <script>
+                                jQuery(document).ready(function ($) {
+                                    // Obsługa alternatywnego eksportu przez AJAX
+                                    $('#nai-export-csv-ajax').on('click', function (e) {
+                                        e.preventDefault();
+
+                                        var $button = $(this);
+                                        var originalText = $button.html();
+
+                                        console.log('Newsletter AI: Rozpoczynanie eksportu CSV przez AJAX');
+
+                                        $button.prop('disabled', true).html('📥 Generowanie...');
+
+                                        $.ajax({
+                                            url: newsletterAI.ajax_url,
+                                            type: 'POST',
+                                            data: {
+                                                action: 'nai_export_csv',
+                                                nonce: newsletterAI.nonce
+                                            },
+                                            timeout: 60000, // 60 sekund
+                                            success: function (response) {
+                                                console.log('Newsletter AI: Export response:', response);
+
+                                                if (response.success && response.data.url) {
+                                                    // Utwórz tymczasowy link do pobrania
+                                                    var link = document.createElement('a');
+                                                    link.href = response.data.url;
+                                                    link.download = response.data.filename || 'newsletter_export.csv';
+                                                    document.body.appendChild(link);
+                                                    link.click();
+                                                    document.body.removeChild(link);
+
+                                                    alert('Plik CSV został wygenerowany i pobrany!');
+                                                } else {
+                                                    alert('Błąd: ' + (response.data || 'Nie udało się wygenerować pliku'));
+                                                }
+                                            },
+                                            error: function (xhr, status, error) {
+                                                console.error('Newsletter AI: AJAX error:', xhr, status, error);
+                                                alert('Błąd połączenia podczas eksportu: ' + error);
+                                            },
+                                            complete: function () {
+                                                $button.prop('disabled', false).html(originalText);
+                                            }
+                                        });
+                                    });
+                                });
+                            </script>
 
                             <?php if ($statistics['users_without_field'] > 0): ?>
                                 <div class="nai-notice nai-notice-warning">
@@ -671,7 +690,7 @@ jQuery(document).ready(function($) {
         <div class="wrap nai-admin-page">
             <h1><?php _e('Newsletter AI - Ustawienia Frontend', 'newsletter-ai'); ?></h1>
 
-        <?php settings_errors('nai_settings'); ?>
+            <?php settings_errors('nai_settings'); ?>
 
             <!-- Statystyki frontend -->
             <?php if (!empty($frontend_stats)): ?>
@@ -697,7 +716,7 @@ jQuery(document).ready(function($) {
                         <p><strong><?php _e('Ostatnia aktualizacja:', 'newsletter-ai'); ?></strong> <?php echo esc_html($frontend_stats['last_update'] ?? 'nigdy'); ?></p>
                     </div>
                 </div>
-        <?php endif; ?>
+            <?php endif; ?>
 
             <div class="nai-nav-tabs">
                 <ul>
@@ -709,7 +728,7 @@ jQuery(document).ready(function($) {
             </div>
 
             <form method="post" action="">
-        <?php wp_nonce_field('nai_frontend_settings', 'nai_frontend_nonce'); ?>
+                <?php wp_nonce_field('nai_frontend_settings', 'nai_frontend_nonce'); ?>
 
                 <!-- Tab: Treść i wymagania -->
                 <div id="tab-content" class="nai-tab-content">
@@ -728,7 +747,7 @@ jQuery(document).ready(function($) {
                             <div class="nai-form-field">
                                 <label>
                                     <input type="checkbox" name="nai_consent_required" value="1" <?php checked($consent_required, true); ?> />
-        <?php _e('Wymagana zgoda', 'newsletter-ai'); ?>
+                                    <?php _e('Wymagana zgoda', 'newsletter-ai'); ?>
                                 </label>
                                 <p class="description"><?php _e('Jeśli zaznaczone, użytkownicy muszą wyrazić zgodę aby się zarejestrować/złożyć zamówienie', 'newsletter-ai'); ?></p>
                             </div>
@@ -746,7 +765,7 @@ jQuery(document).ready(function($) {
                             <div class="nai-form-field">
                                 <label>
                                     <input type="checkbox" name="nai_show_on_registration" value="1" <?php checked($show_on_registration, true); ?> />
-        <?php _e('Strona rejestracji', 'newsletter-ai'); ?>
+                                    <?php _e('Strona rejestracji', 'newsletter-ai'); ?>
                                 </label>
                                 <p class="description"><?php _e('Pokaż checkbox zgody na stronie rejestracji WordPress i WooCommerce', 'newsletter-ai'); ?></p>
                             </div>
@@ -754,7 +773,7 @@ jQuery(document).ready(function($) {
                             <div class="nai-form-field">
                                 <label>
                                     <input type="checkbox" name="nai_show_on_checkout" value="1" <?php checked($show_on_checkout, true); ?> />
-        <?php _e('Checkout (kasa)', 'newsletter-ai'); ?>
+                                    <?php _e('Checkout (kasa)', 'newsletter-ai'); ?>
                                 </label>
                                 <p class="description"><?php _e('Pokaż checkbox zgody podczas checkout (tylko jeśli użytkownik nie ma zgody)', 'newsletter-ai'); ?></p>
                             </div>
@@ -762,7 +781,7 @@ jQuery(document).ready(function($) {
                             <div class="nai-form-field">
                                 <label>
                                     <input type="checkbox" name="nai_show_in_myaccount" value="1" <?php checked($show_in_myaccount, true); ?> />
-        <?php _e('MyAccount (moje konto)', 'newsletter-ai'); ?>
+                                    <?php _e('MyAccount (moje konto)', 'newsletter-ai'); ?>
                                 </label>
                                 <p class="description"><?php _e('Pokaż przełącznik zgody w profilu klienta WooCommerce', 'newsletter-ai'); ?></p>
                             </div>
@@ -780,7 +799,7 @@ jQuery(document).ready(function($) {
                             <div class="nai-form-field">
                                 <label>
                                     <input type="checkbox" name="nai_load_frontend_styles" value="1" <?php checked($load_frontend_styles, true); ?> />
-        <?php _e('Ładuj style CSS', 'newsletter-ai'); ?>
+                                    <?php _e('Ładuj style CSS', 'newsletter-ai'); ?>
                                 </label>
                                 <p class="description"><?php _e('Automatycznie ładuj style CSS dla pól zgody', 'newsletter-ai'); ?></p>
                             </div>
@@ -867,7 +886,7 @@ jQuery(document).ready(function($) {
                                         </a>
                                     </div>
 
-        <?php if (class_exists('WooCommerce')): ?>
+                                    <?php if (class_exists('WooCommerce')): ?>
                                         <div class="nai-form-field">
                                             <a href="<?php echo wc_get_page_permalink('myaccount'); ?>" target="_blank" class="nai-btn nai-btn-secondary">
                                                 👤 <?php _e('Otwórz MyAccount', 'newsletter-ai'); ?>
@@ -879,7 +898,7 @@ jQuery(document).ready(function($) {
                                                 🛒 <?php _e('Otwórz Checkout', 'newsletter-ai'); ?>
                                             </a>
                                         </div>
-        <?php endif; ?>
+                                    <?php endif; ?>
 
                                     <p class="description"><?php _e('Sprawdź jak wyglądają pola zgody na poszczególnych stronach', 'newsletter-ai'); ?></p>
                                 </div>
@@ -893,9 +912,9 @@ jQuery(document).ready(function($) {
                                 <div class="nai-metabox-content">
                                     <p><?php _e('Jeśli chcesz używać własnych stylów, wyłącz automatyczne ładowanie CSS i dodaj te selektory do swojego motywu:', 'newsletter-ai'); ?></p>
                                     <pre style="background: #f1f1f1; padding: 15px; border-radius: 4px; overflow-x: auto; font-size: 12px;"><code>.nai-consent-wrapper { /* kontener checkbox'a */ }
-                .nai-consent-checkbox { /* sam checkbox */ }
-                .nai-checkout-consent { /* sekcja w checkout */ }
-                .nai-myaccount-consent { /* sekcja w MyAccount */ }</code></pre>
+                                        .nai-consent-checkbox { /* sam checkbox */ }
+                                        .nai-checkout-consent { /* sekcja w checkout */ }
+                                        .nai-myaccount-consent { /* sekcja w MyAccount */ }</code></pre>
                                 </div>
                             </div>
                         </div>
@@ -1068,6 +1087,946 @@ jQuery(document).ready(function($) {
                 font-weight: bold;
             }
         </style>
+        <?php
+    }
+
+    /**
+     * Strona ustawień cron
+     */
+    public function cron_page() {
+        $cron_manager = new Newsletter_AI_Cron_Manager();
+
+        // Pobierz aktualne ustawienia
+        $cron_enabled = get_option('nai_cron_enabled', true);
+        $cron_time = get_option('nai_cron_time', '01:10');
+        $generate_customers = get_option('nai_cron_generate_customers', true);
+        $generate_orders = get_option('nai_cron_generate_orders', false);
+        $generate_products = get_option('nai_cron_generate_products', false);
+
+        // Pobierz informacje o stanie cron
+        $is_active = $cron_manager->is_cron_active();
+        $next_run = $cron_manager->get_next_scheduled_run();
+        $last_run = $cron_manager->get_last_run_results();
+        ?>
+        <div class="wrap nai-admin-page">
+            <h1><?php _e('Newsletter AI - Ustawienia Cron', 'newsletter-ai'); ?></h1>
+
+            <?php settings_errors('nai_settings'); ?>
+
+            <div class="nai-grid nai-grid-2">
+                <!-- Kolumna lewa - status i ostatnie uruchomienie -->
+                <div>
+                    <!-- Status cron -->
+                    <div class="nai-metabox">
+                        <div class="nai-metabox-header <?php echo $is_active ? 'success' : 'warning'; ?>">
+                            <h3>⏰ <?php _e('Status automatycznego generowania', 'newsletter-ai'); ?></h3>
+                        </div>
+                        <div class="nai-metabox-content">
+                            <?php if ($is_active): ?>
+                                <div class="nai-notice nai-notice-success">
+                                    <span>✅</span>
+                                    <div>
+                                        <p><strong><?php _e('Cron jest aktywny', 'newsletter-ai'); ?></strong></p>
+                                        <p><?php _e('Następne uruchomienie:', 'newsletter-ai'); ?> <code><?php echo esc_html($next_run); ?></code></p>
+                                    </div>
+                                </div>
+                            <?php else: ?>
+                                <div class="nai-notice nai-notice-warning">
+                                    <span>⚠️</span>
+                                    <div>
+                                        <p><strong><?php _e('Cron jest nieaktywny', 'newsletter-ai'); ?></strong></p>
+                                        <p><?php _e('Automatyczne generowanie plików XML jest wyłączone.', 'newsletter-ai'); ?></p>
+                                    </div>
+                                </div>
+                            <?php endif; ?>
+
+                            <div class="nai-text-center" style="margin-top: 20px;">
+                                <button type="button" id="nai-run-cron-manually" class="nai-btn nai-btn-primary">
+                                    ▶️ <?php _e('Uruchom teraz ręcznie', 'newsletter-ai'); ?>
+                                </button>
+                                <div id="nai-cron-execution-status" style="margin-top: 10px;"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Ostatnie uruchomienie -->
+                    <?php if (!empty($last_run)): ?>
+                        <div class="nai-metabox">
+                            <div class="nai-metabox-header secondary">
+                                <h3>📊 <?php _e('Ostatnie uruchomienie', 'newsletter-ai'); ?></h3>
+                            </div>
+                            <div class="nai-metabox-content">
+                                <p><strong><?php _e('Data:', 'newsletter-ai'); ?></strong> <?php echo esc_html($last_run['timestamp'] ?? 'brak'); ?></p>
+                                <p><strong><?php _e('Czas wykonania:', 'newsletter-ai'); ?></strong> <?php echo esc_html($last_run['execution_time'] ?? 'brak'); ?>s</p>
+
+                                <?php if (isset($last_run['results'])): ?>
+                                    <div style="margin-top: 15px;">
+                                        <strong><?php _e('Wyniki:', 'newsletter-ai'); ?></strong>
+                                        <div style="margin-top: 8px;">
+                                            <?php foreach ($last_run['results'] as $task => $result): ?>
+                                                <?php if (is_array($result)): ?>
+                                                    <div class="nai-result-item" style="padding: 8px; margin: 5px 0; background: #f6f7f7; border-radius: 4px;">
+                                                        <strong><?php echo esc_html(ucfirst($task)); ?>:</strong>
+                                                        <span class="nai-status-badge nai-status-<?php echo esc_attr($result['status'] ?? 'unknown'); ?>">
+                                                            <?php echo esc_html($result['status'] ?? 'unknown'); ?>
+                                                        </span>
+                                                        <br>
+                                                        <small><?php echo esc_html($result['message'] ?? ''); ?></small>
+                                                        <?php if (isset($result['file'])): ?>
+                                                            <br><code><?php echo esc_html($result['file']); ?></code>
+                                                        <?php endif; ?>
+                                                    </div>
+                                                <?php else: ?>
+                                                    <div class="nai-result-item" style="padding: 8px; margin: 5px 0; background: #f8d7da; border-radius: 4px;">
+                                                        <strong><?php echo esc_html($task); ?>:</strong> <?php echo esc_html($result); ?>
+                                                    </div>
+                                                <?php endif; ?>
+                                            <?php endforeach; ?>
+                                        </div>
+                                    </div>
+                                <?php endif; ?>
+                            </div>
+                        </div>
+                    <?php endif; ?>
+                </div>
+
+                <!-- Kolumna prawa - ustawienia -->
+                <div>
+                    <!-- Formularz ustawień cron -->
+                    <div class="nai-metabox">
+                        <div class="nai-metabox-header">
+                            <h3>⚙️ <?php _e('Konfiguracja automatycznego generowania', 'newsletter-ai'); ?></h3>
+                        </div>
+                        <div class="nai-metabox-content">
+                            <form method="post" action="">
+                                <?php wp_nonce_field('nai_cron_settings', 'nai_cron_nonce'); ?>
+
+                                <div class="nai-form-field">
+                                    <label>
+                                        <input type="checkbox" name="nai_cron_enabled" value="1" 
+                                               <?php checked($cron_enabled, true); ?> />
+                                               <?php _e('Włącz automatyczne generowanie', 'newsletter-ai'); ?>
+                                    </label>
+                                    <p class="description"><?php _e('Automatycznie generuj pliki XML codziennie o określonej godzinie', 'newsletter-ai'); ?></p>
+                                </div>
+
+                                <div class="nai-form-field">
+                                    <label for="nai_cron_time"><?php _e('Godzina uruchomienia', 'newsletter-ai'); ?></label>
+                                    <input type="time" id="nai_cron_time" name="nai_cron_time" 
+                                           value="<?php echo esc_attr($cron_time); ?>" />
+                                    <p class="description">
+                                        <?php _e('Godzina codziennego uruchomienia (czas lokalny serwera)', 'newsletter-ai'); ?>
+                                        <br><small><?php printf(__('Strefa czasowa serwera: %s'), get_option('timezone_string') ?: 'UTC' . get_option('gmt_offset')); ?></small>
+                                    </p>
+                                </div>
+
+                                <fieldset style="border: 1px solid #c3c4c7; padding: 15px; border-radius: 4px; margin: 20px 0;">
+                                    <legend style="font-weight: 600; padding: 0 8px;"><?php _e('Pliki do generowania', 'newsletter-ai'); ?></legend>
+
+                                    <div class="nai-form-field">
+                                        <label>
+                                            <input type="checkbox" name="nai_cron_generate_customers" value="1" 
+                                                   <?php checked($generate_customers, true); ?> />
+                                                   <?php _e('sambaAiCustomers.xml', 'newsletter-ai'); ?>
+                                        </label>
+                                        <p class="description"><?php _e('Plik z danymi klientów i zgodami na newsletter', 'newsletter-ai'); ?></p>
+                                    </div>
+
+                                    <div class="nai-form-field">
+                                        <label>
+                                            <input type="checkbox" name="nai_cron_generate_orders" value="1" 
+                                                   <?php checked($generate_orders, true); ?> />
+                                                   <?php _e('sambaAiOrders.xml', 'newsletter-ai'); ?> 
+                                            <span style="color: #646970; font-style: italic;">(<?php _e('przyszłość', 'newsletter-ai'); ?>)</span>
+                                        </label>
+                                        <p class="description"><?php _e('Plik z danymi zamówień (implementacja w przyszłości)', 'newsletter-ai'); ?></p>
+                                    </div>
+
+                                    <div class="nai-form-field">
+                                        <label>
+                                            <input type="checkbox" name="nai_cron_generate_products" value="1" 
+                                                   <?php checked($generate_products, true); ?> />
+                                                   <?php _e('sambaAiProducts.xml', 'newsletter-ai'); ?>
+                                            <span style="color: #646970; font-style: italic;">(<?php _e('przyszłość', 'newsletter-ai'); ?>)</span>
+                                        </label>
+                                        <p class="description"><?php _e('Plik z danymi produktów (implementacja w przyszłości)', 'newsletter-ai'); ?></p>
+                                    </div>
+                                </fieldset>
+
+                                <button type="submit" name="nai_save_cron_settings" class="nai-btn nai-btn-primary">
+                                    💾 <?php _e('Zapisz ustawienia cron', 'newsletter-ai'); ?>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Informacje o cron -->
+                    <div class="nai-metabox">
+                        <div class="nai-metabox-header warning">
+                            <h3>ℹ️ <?php _e('Informacje o systemie cron', 'newsletter-ai'); ?></h3>
+                        </div>
+                        <div class="nai-metabox-content">
+                            <p><?php _e('System cron WordPress działa tylko wtedy, gdy ktoś odwiedza Twoją stronę.', 'newsletter-ai'); ?></p>
+                            <p><?php _e('Dla bardziej niezawodnego działania rozważ skonfigurowanie prawdziwego cron na serwerze.', 'newsletter-ai'); ?></p>
+
+                            <details style="margin-top: 15px;">
+                                <summary><strong><?php _e('Informacje techniczne', 'newsletter-ai'); ?></strong></summary>
+                                <div style="margin-top: 10px; font-family: monospace; font-size: 12px;">
+                                    <p><strong>Hook cron:</strong> <code>newsletter_ai_cron_hook</code></p>
+                                    <p><strong>Lokalizacja plików:</strong> <code><?php echo esc_html(WP_CONTENT_DIR . '/sambaAiExport/'); ?></code></p>
+                                    <p><strong>WordPress cron status:</strong> 
+                                        <?php if (defined('DISABLE_WP_CRON') && DISABLE_WP_CRON): ?>
+                                            <span style="color: #d63638;">Wyłączony (DISABLE_WP_CRON = true)</span>
+                                        <?php else: ?>
+                                            <span style="color: #00a32a;">Włączony</span>
+                                        <?php endif; ?>
+                                    </p>
+                                </div>
+                            </details>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Instrukcje -->
+            <div class="nai-metabox">
+                <div class="nai-metabox-header warning">
+                    <h3>📖 <?php _e('Jak działa automatyczne generowanie', 'newsletter-ai'); ?></h3>
+                </div>
+                <div class="nai-metabox-content">
+                    <ol>
+                        <li><?php _e('Włącz automatyczne generowanie i ustaw godzinę uruchomienia', 'newsletter-ai'); ?></li>
+                        <li><?php _e('Wybierz które pliki XML mają być generowane automatycznie', 'newsletter-ai'); ?></li>
+                        <li><?php _e('System codziennie o wybranej godzinie wygeneruje i nadpisze pliki XML', 'newsletter-ai'); ?></li>
+                        <li><?php _e('Sprawdzaj status w tej zakładce lub używaj "Uruchom teraz ręcznie" do testów', 'newsletter-ai'); ?></li>
+                        <li><?php _e('Wszystkie operacje są logowane (jeśli włączony jest tryb debug)', 'newsletter-ai'); ?></li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            jQuery(document).ready(function ($) {
+                // Obsługa manualnego uruchomienia cron
+                $('#nai-run-cron-manually').on('click', function (e) {
+                    e.preventDefault();
+
+                    var $button = $(this);
+                    var $status = $('#nai-cron-execution-status');
+                    var originalText = $button.html();
+
+                    $button.prop('disabled', true).html('⏳ <?php _e('Wykonywanie...', 'newsletter-ai'); ?>');
+                    $status.html('<div class="nai-notice nai-notice-info"><div class="nai-spinner"></div> <?php _e('Wykonywanie zadań cron...', 'newsletter-ai'); ?></div>');
+
+                    $.post(newsletterAI.ajax_url, {
+                        action: 'nai_run_cron_manually',
+                        nonce: newsletterAI.nonce
+                    })
+                            .done(function (response) {
+                                if (response.success) {
+                                    $status.html('<div class="nai-notice nai-notice-success">✅ ' + response.data.message + '</div>');
+
+                                    // Odśwież stronę po 3 sekundach żeby pokazać nowe wyniki
+                                    setTimeout(function () {
+                                        location.reload();
+                                    }, 3000);
+                                } else {
+                                    $status.html('<div class="nai-notice nai-notice-error">❌ ' + response.data + '</div>');
+                                }
+                            })
+                            .fail(function (xhr, status, error) {
+                                $status.html('<div class="nai-notice nai-notice-error">❌ <?php _e('Błąd połączenia:', 'newsletter-ai'); ?> ' + error + '</div>');
+                            })
+                            .always(function () {
+                                $button.prop('disabled', false).html(originalText);
+                            });
+                });
+            });
+        </script>
+
+        <style>
+            .nai-status-badge {
+                padding: 2px 6px;
+                border-radius: 3px;
+                font-size: 11px;
+                font-weight: 600;
+                text-transform: uppercase;
+            }
+
+            .nai-status-success {
+                background: #d1ecf1;
+                color: #0c5460;
+            }
+
+            .nai-status-placeholder {
+                background: #fff3cd;
+                color: #856404;
+            }
+
+            .nai-status-error {
+                background: #f8d7da;
+                color: #721c24;
+            }
+
+            .nai-result-item {
+                font-size: 13px;
+                line-height: 1.4;
+            }
+        </style>
+        <?php
+    }
+
+    /**
+     * Strona testowania klientów
+     */
+    public function test_page() {
+        $validator = new Newsletter_AI_Customer_Validator();
+        $summary = $validator->get_validation_summary();
+        ?>
+        <div class="wrap nai-admin-page nai-test-page">
+            <h1><?php _e('Newsletter AI - Test - Klienci', 'newsletter-ai'); ?></h1>
+
+            <!-- Statystyki walidacji -->
+            <div class="nai-metabox">
+                <div class="nai-metabox-header primary">
+                    <h3>🔍 <?php _e('Statystyki walidacji danych', 'newsletter-ai'); ?></h3>
+                </div>
+                <div class="nai-metabox-content">
+                    <div class="nai-stats-grid">
+                        <div class="nai-stat-card">
+                            <div class="nai-stat-number"><?php echo esc_html($summary['total']); ?></div>
+                            <div class="nai-stat-label"><?php _e('Łącznie klientów', 'newsletter-ai'); ?></div>
+                        </div>
+                        <div class="nai-stat-card nai-stat-valid">
+                            <div class="nai-stat-number"><?php echo esc_html($summary['valid']); ?></div>
+                            <div class="nai-stat-label"><?php _e('Poprawne dane', 'newsletter-ai'); ?></div>
+                        </div>
+                        <div class="nai-stat-card nai-stat-warning">
+                            <div class="nai-stat-number"><?php echo esc_html($summary['warnings']); ?></div>
+                            <div class="nai-stat-label"><?php _e('Ostrzeżenia', 'newsletter-ai'); ?></div>
+                        </div>
+                        <div class="nai-stat-card nai-stat-error">
+                            <div class="nai-stat-number"><?php echo esc_html($summary['errors']); ?></div>
+                            <div class="nai-stat-label"><?php _e('Błędy', 'newsletter-ai'); ?></div>
+                        </div>
+                        <div class="nai-stat-card nai-stat-ignored">
+                            <div class="nai-stat-number"><?php echo esc_html($summary['ignored']); ?></div>
+                            <div class="nai-stat-label"><?php _e('Ignorowane', 'newsletter-ai'); ?></div>
+                        </div>
+                    </div>
+
+                    <div style="margin-top: 20px;">
+                        <p><strong><?php _e('Problemy podobne do Samba.AI:', 'newsletter-ai'); ?></strong></p>
+                        <ul style="margin-left: 20px;">
+                            <li><?php _e('Missing <FIRST_NAME> - Brak imienia', 'newsletter-ai'); ?></li>
+                            <li><?php _e('Missing <LAST_NAME> - Brak nazwiska', 'newsletter-ai'); ?></li>
+                            <li><?php _e('Missing <PHONE> - Brak numeru telefonu', 'newsletter-ai'); ?></li>
+                            <li><?php _e('Missing <ZIP_CODE> - Brak kodu pocztowego', 'newsletter-ai'); ?></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="nai-grid nai-grid-4-1">
+                <!-- Kolumna główna - lista klientów -->
+                <div class="nai-test-main">
+                    <!-- Filtry -->
+                    <div class="nai-test-filters">
+                        <div class="nai-filter-buttons">
+                            <button type="button" class="nai-filter-btn active" data-filter="all">
+                                🔍 <?php _e('Wszyscy', 'newsletter-ai'); ?> (<span id="count-all"><?php echo $summary['total']; ?></span>)
+                            </button>
+                            <button type="button" class="nai-filter-btn" data-filter="errors">
+                                ❌ <?php _e('Błędy', 'newsletter-ai'); ?> (<span id="count-errors"><?php echo $summary['errors']; ?></span>)
+                            </button>
+                            <button type="button" class="nai-filter-btn" data-filter="warnings">
+                                ⚠️ <?php _e('Ostrzeżenia', 'newsletter-ai'); ?> (<span id="count-warnings"><?php echo $summary['warnings']; ?></span>)
+                            </button>
+                            <button type="button" class="nai-filter-btn" data-filter="valid">
+                                ✅ <?php _e('Poprawne', 'newsletter-ai'); ?> (<span id="count-valid"><?php echo $summary['valid']; ?></span>)
+                            </button>
+                            <button type="button" class="nai-filter-btn" data-filter="ignored">
+                                🚫 <?php _e('Ignorowane', 'newsletter-ai'); ?> (<span id="count-ignored"><?php echo $summary['ignored']; ?></span>)
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Lista klientów -->
+                    <div class="nai-metabox">
+                        <div class="nai-metabox-header primary">
+                            <h3>👥 <?php _e('Lista klientów', 'newsletter-ai'); ?></h3>
+                        </div>
+                        <div class="nai-metabox-content nai-p-0">
+                            <div id="nai-customers-validation-container">
+                                <div class="nai-loading">
+                                    <div class="nai-spinner"></div>
+                                    <?php _e('Ładowanie i walidacja klientów...', 'newsletter-ai'); ?>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sidebar - narzędzia -->
+                <div class="nai-test-sidebar">
+                    <!-- Akcje masowe -->
+                    <div class="nai-metabox">
+                        <div class="nai-metabox-header">
+                            <h3>🛠️ <?php _e('Akcje masowe', 'newsletter-ai'); ?></h3>
+                        </div>
+                        <div class="nai-metabox-content">
+                            <div class="nai-form-field">
+                                <button type="button" id="nai-refresh-validation" class="nai-btn nai-btn-primary" style="width: 100%;">
+                                    🔄 <?php _e('Odśwież walidację', 'newsletter-ai'); ?>
+                                </button>
+                                <p class="description"><?php _e('Ponownie sprawdź wszystkich klientów', 'newsletter-ai'); ?></p>
+                            </div>
+                            
+                        </div>
+                    </div>
+
+                    <!-- Reguły walidacji -->
+                    <div class="nai-metabox">
+                        <div class="nai-metabox-header secondary">
+                            <h3>📋 <?php _e('Reguły walidacji', 'newsletter-ai'); ?></h3>
+                        </div>
+                        <div class="nai-metabox-content">
+                            <div class="nai-validation-rules">
+                                <div class="nai-rule">
+                                    <strong>FIRST_NAME</strong>
+                                    <small>Wymagane, min. 2 znaki</small>
+                                </div>
+                                <div class="nai-rule">
+                                    <strong>LAST_NAME</strong>
+                                    <small>Wymagane, min. 2 znaki</small>
+                                </div>
+                                <div class="nai-rule">
+                                    <strong>EMAIL</strong>
+                                    <small>Wymagane, prawidłowy format</small>
+                                </div>
+                                <div class="nai-rule">
+                                    <strong>PHONE</strong>
+                                    <small>Opcjonalne, min. 9 znaków</small>
+                                </div>
+                                <div class="nai-rule">
+                                    <strong>ZIP_CODE</strong>
+                                    <small>Opcjonalne, min. 3 znaki</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Legenda -->
+                    <div class="nai-metabox">
+                        <div class="nai-metabox-header secondary">
+                            <h3>🏷️ <?php _e('Legenda', 'newsletter-ai'); ?></h3>
+                        </div>
+                        <div class="nai-metabox-content">
+                            <div class="nai-legend">
+                                <div class="nai-legend-item">
+                                    <span class="nai-score-badge nai-score-excellent">90-100</span>
+                                    <span><?php _e('Doskonałe', 'newsletter-ai'); ?></span>
+                                </div>
+                                <div class="nai-legend-item">
+                                    <span class="nai-score-badge nai-score-good">70-89</span>
+                                    <span><?php _e('Dobre', 'newsletter-ai'); ?></span>
+                                </div>
+                                <div class="nai-legend-item">
+                                    <span class="nai-score-badge nai-score-poor">50-69</span>
+                                    <span><?php _e('Słabe', 'newsletter-ai'); ?></span>
+                                </div>
+                                <div class="nai-legend-item">
+                                    <span class="nai-score-badge nai-score-bad">0-49</span>
+                                    <span><?php _e('Bardzo słabe', 'newsletter-ai'); ?></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal do szczegółów klienta -->
+            <div id="nai-customer-details-modal" class="nai-modal" style="display: none;">
+                <div class="nai-modal-content">
+                    <div class="nai-modal-header">
+                        <h3><?php _e('Szczegóły klienta', 'newsletter-ai'); ?></h3>
+                        <span class="nai-modal-close">&times;</span>
+                    </div>
+                    <div class="nai-modal-body">
+                        <div id="nai-customer-details-content">
+                            <!-- Zawartość ładowana przez AJAX -->
+                        </div>
+                    </div>
+                    <div class="nai-modal-footer">
+                        <button type="button" class="nai-btn nai-btn-secondary" id="nai-modal-close-btn">
+                            <?php _e('Zamknij', 'newsletter-ai'); ?>
+                        </button>
+                        <button type="button" class="nai-btn nai-btn-primary" id="nai-save-customer-data">
+                            💾 <?php _e('Zapisz zmiany', 'newsletter-ai'); ?>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Instrukcje -->
+            <div class="nai-metabox">
+                <div class="nai-metabox-header warning">
+                    <h3>📖 <?php _e('Jak używać testera klientów', 'newsletter-ai'); ?></h3>
+                </div>
+                <div class="nai-metabox-content">
+                    <ol>
+                        <li><?php _e('Przejrzyj statystyki walidacji na górze strony', 'newsletter-ai'); ?></li>
+                        <li><?php _e('Użyj filtrów aby zobaczyć klientów z konkretnymi problemami', 'newsletter-ai'); ?></li>
+                        <li><?php _e('Kliknij na klienta aby zobaczyć szczegóły i edytować dane', 'newsletter-ai'); ?></li>
+                        <li><?php _e('Użyj przycisku "Ignoruj" dla klientów których nie chcesz eksportować', 'newsletter-ai'); ?></li>
+                        <li><?php _e('Wypróbuj auto-naprawę dla automatycznego uzupełnienia brakujących danych', 'newsletter-ai'); ?></li>
+                        <li><?php _e('Po naprawie problemów wygeneruj ponownie XML w zakładce "XML - Klienci"', 'newsletter-ai'); ?></li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            jQuery(document).ready(function ($) {
+                var currentFilter = 'all';
+                var currentPage = 1;
+
+                // Załaduj początkowe dane
+                loadCustomersValidation();
+
+                // Obsługa filtrów
+                $('.nai-filter-btn').on('click', function () {
+                    $('.nai-filter-btn').removeClass('active');
+                    $(this).addClass('active');
+                    currentFilter = $(this).data('filter');
+                    currentPage = 1;
+                    loadCustomersValidation();
+                });
+
+                // Odśwież walidację
+                $('#nai-refresh-validation').on('click', function () {
+                    loadCustomersValidation();
+                });
+
+                // Obsługa modalu
+                $('.nai-modal-close, #nai-modal-close-btn').on('click', function () {
+                    $('#nai-customer-details-modal').hide();
+                });
+
+                // Zamknij modal po kliknięciu w tło
+                $('#nai-customer-details-modal').on('click', function (e) {
+                    if (e.target === this) {
+                        $(this).hide();
+                    }
+                });
+
+                // Obsługa kliknięć w paginację - ZMIENIONE
+                $(document).on('click', '.nai-pagination-link', function (e) {
+                    e.preventDefault();
+                    var page = $(this).data('page');
+                    if (page && page !== currentPage) {
+                        currentPage = page;
+                        loadCustomersValidation();
+                    }
+                });
+
+                // Funkcja ładowania klientów
+                function loadCustomersValidation() {
+                    console.log('Loading customers with filter:', currentFilter, 'page:', currentPage);
+
+                    var $container = $('#nai-customers-validation-container');
+                    $container.html('<div class="nai-loading"><div class="nai-spinner"></div> Walidacja klientów...</div>');
+
+                    $.ajax({
+                        url: newsletterAI.ajax_url,
+                        type: 'POST',
+                        data: {
+                            action: 'nai_validate_customers',
+                            nonce: newsletterAI.nonce,
+                            page: currentPage,
+                            filter: currentFilter
+                        },
+                        timeout: 60000
+                    })
+                            .done(function (response) {
+                                if (response.success) {
+                                    $container.html(buildCustomersValidationTable(response.data));
+                                } else {
+                                    showError('Błąd walidacji: ' + response.data);
+                                }
+                            })
+                            .fail(function (xhr, status, error) {
+                                showError('Błąd połączenia: ' + error);
+                            });
+                }
+
+                // Buduj tabelę klientów
+                function buildCustomersValidationTable(data) {
+                    var html = '<table class="wp-list-table widefat fixed striped nai-validation-table">';
+
+                    // Nagłówek
+                    html += '<thead><tr>';
+                    html += '<th class="column-score">Wynik</th>';
+                    html += '<th class="column-customer">Klient</th>';
+                    html += '<th class="column-problems">Problemy</th>';
+                    html += '<th class="column-consent">Zgoda</th>';
+                    html += '<th class="column-actions">Akcje</th>';
+                    html += '</tr></thead>';
+
+                    html += '<tbody>';
+                    if (data.customers && data.customers.length > 0) {
+                        $.each(data.customers, function (i, customer) {
+                            html += buildCustomerRow(customer);
+                        });
+                    } else {
+                        html += '<tr><td colspan="5" class="nai-text-center" style="padding: 40px 20px;">';
+                        html += '<div style="font-size: 48px; margin-bottom: 10px;">🔍</div>';
+                        html += '<p>Brak klientów w tej kategorii</p>';
+                        html += '</td></tr>';
+                    }
+                    html += '</tbody></table>';
+
+                    // Dodaj paginację jeśli potrzebna
+                    if (data.pages > 1) {
+                        html += buildPagination(data);
+                    }
+
+                    return html;
+                }
+
+                // Buduj wiersz klienta
+                function buildCustomerRow(customer) {
+                    var html = '<tr class="nai-customer-row' + (customer.is_ignored ? ' nai-ignored' : '') + '">';
+
+                    // Wynik walidacji
+                    html += '<td class="nai-text-center">';
+                    html += '<span class="nai-score-badge nai-score-' + getScoreClass(customer.validation.score) + '">';
+                    html += customer.validation.score + '%';
+                    html += '</span>';
+                    html += '</td>';
+
+                    // Dane klienta
+                    html += '<td>';
+                    html += '<strong>' + escapeHtml(customer.user_login) + '</strong><br>';
+                    html += '<small>' + escapeHtml(customer.user_email) + '</small><br>';
+                    html += '<small>ID: ' + customer.ID + '</small>';
+                    if (customer.display_name) {
+                        html += '<br><small>' + escapeHtml(customer.display_name) + '</small>';
+                    }
+                    html += '</td>';
+
+                    // Problemy
+                    html += '<td>';
+                    var problems = [];
+                    if (customer.validation.errors.length > 0) {
+                        $.each(customer.validation.errors, function (i, error) {
+                            problems.push('<span class="nai-problem nai-error">❌ ' + escapeHtml(error.message) + '</span>');
+                        });
+                    }
+                    if (customer.validation.warnings.length > 0) {
+                        $.each(customer.validation.warnings, function (i, warning) {
+                            problems.push('<span class="nai-problem nai-warning">⚠️ ' + escapeHtml(warning.message) + '</span>');
+                        });
+                    }
+                    if (problems.length === 0) {
+                        problems.push('<span class="nai-problem nai-valid">✅ Brak problemów</span>');
+                    }
+                    html += problems.join('<br>');
+                    html += '</td>';
+
+                    // Zgoda
+                    html += '<td class="nai-text-center">';
+                    if (customer.has_consent) {
+                        html += '<span class="nai-consent-yes">TAK</span>';
+                    } else {
+                        html += '<span class="nai-consent-no">NIE</span>';
+                    }
+                    html += '<br><small>(' + escapeHtml(customer.consent_value || 'brak') + ')</small>';
+                    html += '</td>';
+
+                    // Akcje
+                    html += '<td class="nai-text-center">';
+                    html += '<button type="button" class="nai-btn nai-btn-small nai-btn-secondary nai-view-details" data-customer-id="' + customer.ID + '">';
+                    html += '👁️ Szczegóły';
+                    html += '</button><br>';
+
+                    var ignoreText = customer.is_ignored ? '🔄 Przywróć' : '🚫 Ignoruj';
+                    var ignoreClass = customer.is_ignored ? 'nai-btn-success' : 'nai-btn-warning';
+                    html += '<button type="button" class="nai-btn nai-btn-small ' + ignoreClass + ' nai-toggle-ignore" data-customer-id="' + customer.ID + '" style="margin-top: 5px;">';
+                    html += ignoreText;
+                    html += '</button>';
+                    html += '</td>';
+
+                    html += '</tr>';
+                    return html;
+                }
+
+                // Pobierz klasę CSS dla wyniku
+                function getScoreClass(score) {
+                    if (score >= 90)
+                        return 'excellent';
+                    if (score >= 70)
+                        return 'good';
+                    if (score >= 50)
+                        return 'poor';
+                    return 'bad';
+                }
+
+                // Obsługa szczegółów klienta
+                $(document).on('click', '.nai-view-details', function () {
+                    var customerId = $(this).data('customer-id');
+                    showCustomerDetails(customerId);
+                });
+
+                // Obsługa ignorowania klienta
+                $(document).on('click', '.nai-toggle-ignore', function () {
+                    var $button = $(this);
+                    var customerId = $button.data('customer-id');
+
+                    $.ajax({
+                        url: newsletterAI.ajax_url,
+                        type: 'POST',
+                        data: {
+                            action: 'nai_toggle_ignore_customer',
+                            nonce: newsletterAI.nonce,
+                            customer_id: customerId
+                        }
+                    })
+                            .done(function (response) {
+                                if (response.success) {
+                                    showSuccess(response.data.message);
+                                    loadCustomersValidation(); // Odśwież listę
+                                } else {
+                                    showError(response.data);
+                                }
+                            })
+                            .fail(function () {
+                                showError('Błąd podczas zmiany statusu ignorowania');
+                            });
+                });
+
+                // Pokaż szczegóły klienta
+                function showCustomerDetails(customerId) {
+                    var $modal = $('#nai-customer-details-modal');
+                    var $content = $('#nai-customer-details-content');
+
+                    $content.html('<div class="nai-loading"><div class="nai-spinner"></div> Ładowanie szczegółów...</div>');
+                    $modal.show();
+
+                    $.ajax({
+                        url: newsletterAI.ajax_url,
+                        type: 'POST',
+                        data: {
+                            action: 'nai_get_validation_details',
+                            nonce: newsletterAI.nonce,
+                            customer_id: customerId
+                        }
+                    })
+                            .done(function (response) {
+                                if (response.success) {
+                                    $content.html(buildCustomerDetailsForm(response.data));
+                                    $modal.data('customer-id', customerId);
+                                } else {
+                                    $content.html('<div class="nai-notice nai-notice-error">Błąd: ' + response.data + '</div>');
+                                }
+                            })
+                            .fail(function () {
+                                $content.html('<div class="nai-notice nai-notice-error">Błąd połączenia</div>');
+                            });
+                }
+
+                // Buduj formularz szczegółów klienta
+                function buildCustomerDetailsForm(data) {
+                    var html = '<div class="nai-customer-details">';
+
+                    // Podstawowe informacje
+                    html += '<div class="nai-customer-basic">';
+                    html += '<h4>Podstawowe informacje</h4>';
+                    html += '<p><strong>ID:</strong> ' + data.user.ID + '</p>';
+                    html += '<p><strong>Login:</strong> ' + escapeHtml(data.user.user_login) + '</p>';
+                    html += '<p><strong>Email:</strong> ' + escapeHtml(data.user.user_email) + '</p>';
+                    html += '<p><strong>Nazwa:</strong> ' + escapeHtml(data.user.display_name || 'brak') + '</p>';
+                    html += '</div>';
+
+                    // Wynik walidacji
+                    html += '<div class="nai-validation-summary">';
+                    html += '<h4>Wynik walidacji: <span class="nai-score-badge nai-score-' + getScoreClass(data.validation.score) + '">' + data.validation.score + '%</span></h4>';
+
+                    if (data.validation.errors.length > 0) {
+                        html += '<div class="nai-validation-group">';
+                        html += '<strong style="color: #d63638;">Błędy:</strong>';
+                        html += '<ul>';
+                        $.each(data.validation.errors, function (i, error) {
+                            html += '<li>❌ ' + escapeHtml(error.message) + ' (' + error.field + ')</li>';
+                        });
+                        html += '</ul>';
+                        html += '</div>';
+                    }
+
+                    if (data.validation.warnings.length > 0) {
+                        html += '<div class="nai-validation-group">';
+                        html += '<strong style="color: #dba617;">Ostrzeżenia:</strong>';
+                        html += '<ul>';
+                        $.each(data.validation.warnings, function (i, warning) {
+                            html += '<li>⚠️ ' + escapeHtml(warning.message) + ' (' + warning.field + ')</li>';
+                        });
+                        html += '</ul>';
+                        html += '</div>';
+                    }
+                    html += '</div>';
+
+                    // Formularz edycji
+                    html += '<div class="nai-customer-edit-form">';
+                    html += '<h4>Edytuj dane klienta</h4>';
+                    html += '<form id="nai-customer-edit-form">';
+
+                    var fieldsToEdit = ['billing_first_name', 'billing_last_name', 'billing_phone', 'billing_postcode'];
+                    var fieldLabels = {
+                        'billing_first_name': 'Imię',
+                        'billing_last_name': 'Nazwisko',
+                        'billing_phone': 'Telefon',
+                        'billing_postcode': 'Kod pocztowy'
+                    };
+
+                    $.each(fieldsToEdit, function (i, field) {
+                        var value = data.meta[field] || '';
+                        html += '<div class="nai-form-field">';
+                        html += '<label for="edit_' + field + '">' + fieldLabels[field] + ':</label>';
+                        html += '<input type="text" id="edit_' + field + '" name="' + field + '" value="' + escapeHtml(value) + '" class="regular-text" />';
+                        html += '</div>';
+                    });
+
+                    html += '</form>';
+                    html += '</div>';
+
+                    html += '</div>';
+                    return html;
+                }
+
+                // Zapisz zmiany klienta
+                $('#nai-save-customer-data').on('click', function () {
+                    var customerId = $('#nai-customer-details-modal').data('customer-id');
+                    var fieldData = {};
+
+                    $('#nai-customer-edit-form input').each(function () {
+                        fieldData[$(this).attr('name')] = $(this).val();
+                    });
+
+                    $.ajax({
+                        url: newsletterAI.ajax_url,
+                        type: 'POST',
+                        data: {
+                            action: 'nai_fix_customer_data',
+                            nonce: newsletterAI.nonce,
+                            customer_id: customerId,
+                            field_data: fieldData
+                        }
+                    })
+                            .done(function (response) {
+                                if (response.success) {
+                                    showSuccess(response.data.message);
+                                    $('#nai-customer-details-modal').hide();
+                                    loadCustomersValidation(); // Odśwież listę
+                                } else {
+                                    showError(response.data);
+                                }
+                            })
+                            .fail(function () {
+                                showError('Błąd podczas zapisywania zmian');
+                            });
+                });
+
+                // Funkcje pomocnicze
+                function showSuccess(message) {
+                    showNotice(message, 'success');
+                }
+
+                function showError(message) {
+                    showNotice(message, 'error');
+                }
+
+                function showNotice(message, type) {
+                    var $notice = $('<div class="nai-notice nai-notice-' + type + '"><p>' + escapeHtml(message) + '</p></div>');
+                    $('.nai-admin-page h1').first().after($notice);
+                    $notice.hide().slideDown(300);
+                    setTimeout(function () {
+                        $notice.slideUp(300, function () {
+                            $(this).remove();
+                        });
+                    }, 5000);
+                }
+
+                function escapeHtml(text) {
+                    if (typeof text !== 'string')
+                        return text;
+                    var map = {
+                        '&': '&amp;',
+                        '<': '&lt;',
+                        '>': '&gt;',
+                        '"': '&quot;',
+                        "'": '&#039;'
+                    };
+                    return text.replace(/[&<>"']/g, function (m) {
+                        return map[m];
+                    });
+                }
+
+                // Buduj paginację
+                function buildPagination(data) {
+                    var html = '<div class="tablenav bottom">';
+                    html += '<div class="tablenav-pages">';
+                    html += '<span class="displaying-num">' + data.total + ' elementów</span>';
+
+                    if (data.pages > 1) {
+                        html += '<span class="pagination-links">';
+
+                        // Pierwsza strona
+                        if (data.current_page > 1) {
+                            html += '<a class="first-page button nai-pagination-link" href="#" data-page="1" title="Pierwsza strona">&laquo;</a>';
+                            html += '<a class="prev-page button nai-pagination-link" href="#" data-page="' + (data.current_page - 1) + '" title="Poprzednia strona">&lsaquo;</a>';
+                        } else {
+                            html += '<span class="tablenav-pages-navspan button disabled">&laquo;</span>';
+                            html += '<span class="tablenav-pages-navspan button disabled">&lsaquo;</span>';
+                        }
+
+                        // Numery stron
+                        var startPage = Math.max(1, data.current_page - 2);
+                        var endPage = Math.min(data.pages, data.current_page + 2);
+
+                        for (var i = startPage; i <= endPage; i++) {
+                            if (i === data.current_page) {
+                                html += '<span class="paging-input"><span class="tablenav-paging-text">' + i + ' z <span class="total-pages">' + data.pages + '</span></span></span>';
+                            } else {
+                                html += '<a class="page-numbers button nai-pagination-link" href="#" data-page="' + i + '">' + i + '</a>';
+                            }
+                        }
+
+                        // Ostatnia strona
+                        if (data.current_page < data.pages) {
+                            html += '<a class="next-page button nai-pagination-link" href="#" data-page="' + (data.current_page + 1) + '" title="Następna strona">&rsaquo;</a>';
+                            html += '<a class="last-page button nai-pagination-link" href="#" data-page="' + data.pages + '" title="Ostatnia strona">&raquo;</a>';
+                        } else {
+                            html += '<span class="tablenav-pages-navspan button disabled">&rsaquo;</span>';
+                            html += '<span class="tablenav-pages-navspan button disabled">&raquo;</span>';
+                        }
+
+                        html += '</span>';
+                    }
+
+                    html += '</div></div>';
+                    return html;
+                }
+
+                // Zmień stronę
+                function changePage(page) {
+                    currentPage = page;
+                    loadCustomersValidation();
+                }
+
+            });
+
+
+        </script>
         <?php
     }
 

@@ -15,13 +15,16 @@ class Newsletter_AI {
     public $version = NEWSLETTER_AI_VERSION;
     
     /**
-     * Instancje klas
-     */
-    public $admin_pages;
-    public $xml_generator;
-    public $consent_manager;
-    public $user_profile;
-    public $frontend_consent;
+ * Instancje klas
+ */
+public $admin_pages;
+public $xml_generator;
+public $consent_manager;
+public $cron_manager; 
+public $dashboard_widget;
+public $customer_validator;
+public $user_profile;
+public $frontend_consent;
     
     /**
      * Konstruktor
@@ -40,25 +43,25 @@ class Newsletter_AI {
     }
     
     /**
-     * Inicjalizacja
-     */
-    private function init() {
-        // Załaduj teksty
-        add_action('init', array($this, 'load_textdomain'));
-        
-        // Inicjalizuj klasy - POPRAWKA KOLEJNOŚCI
-        $this->xml_generator = new Newsletter_AI_XML_Generator();
-        $this->consent_manager = new Newsletter_AI_Consent_Manager();
-        $this->admin_pages = new Newsletter_AI_Admin_Pages();
-        $this->user_profile = new Newsletter_AI_User_Profile();
-        $this->frontend_consent = new Newsletter_AI_Frontend_Consent();
-        
-        // Debug
-        error_log('Newsletter AI: Klasy zainicjalizowane - XML: ' . (is_object($this->xml_generator) ? 'OK' : 'BŁĄD'));
-        error_log('Newsletter AI: Klasy zainicjalizowane - Consent: ' . (is_object($this->consent_manager) ? 'OK' : 'BŁĄD'));
-        error_log('Newsletter AI: Klasy zainicjalizowane - User Profile: ' . (is_object($this->user_profile) ? 'OK' : 'BŁĄD'));
-        error_log('Newsletter AI: Klasy zainicjalizowane - Frontend: ' . (is_object($this->frontend_consent) ? 'OK' : 'BŁĄD'));
-    }
+ * Inicjalizacja
+ */
+private function init() {
+    // Załaduj teksty
+    add_action('init', array($this, 'load_textdomain'));
+    
+    // Inicjalizuj klasy - DODAJ CRON MANAGER
+    $this->xml_generator = new Newsletter_AI_XML_Generator();
+    $this->consent_manager = new Newsletter_AI_Consent_Manager();
+    $this->cron_manager = new Newsletter_AI_Cron_Manager(); 
+    $this->customer_validator = new Newsletter_AI_Customer_Validator();
+    $this->dashboard_widget = new Newsletter_AI_Dashboard_Widget();
+    $this->admin_pages = new Newsletter_AI_Admin_Pages();
+    $this->user_profile = new Newsletter_AI_User_Profile();
+    $this->frontend_consent = new Newsletter_AI_Frontend_Consent();
+    
+    // Debug
+    error_log('Newsletter AI: Klasy zainicjalizowane - Cron Manager: ' . (is_object($this->cron_manager) ? 'OK' : 'BŁĄD'));
+}
     
     /**
      * Inicjalizuj klasy pomocnicze
